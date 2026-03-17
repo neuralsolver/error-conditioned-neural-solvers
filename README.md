@@ -1,7 +1,9 @@
 # Self-correction1-PDE
 
-The solver uses two neural operators (FNO-CNN or U-Net): \\
-**model0**: produces an initial prediction from the forcing field `f` \\
+The solver uses two neural operators (FNO-CNN or U-Net): 
+
+**model0**: produces an initial prediction from the forcing field `f` 
+
 **model1**: iteratively corrects the prediction using the PDE residual as feedback
 
 At each correction step:
