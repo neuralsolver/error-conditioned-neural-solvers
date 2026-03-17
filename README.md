@@ -63,5 +63,3 @@ Then run:
 ```bash
 python evaluate.py --config helmholtz_solver/configs/helmholtz.yaml
 ```
-
-- 
