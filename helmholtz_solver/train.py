@@ -29,7 +29,7 @@ import torch.nn as nn
 import yaml
 from torch.utils.data import DataLoader, TensorDataset
 
-from models import FNO_CNN, UNet
+from helmholtz_solver.models import FNO_CNN, UNet
 from pde_losses import PDELossHZ
 
 
