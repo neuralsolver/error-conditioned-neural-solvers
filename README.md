@@ -22,8 +22,46 @@ $$\nabla^2 u + k^2 u = f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \par
 
 ### Training
 ```bash
-python train.py --config configs/helmholtz.yaml
+python train.py --config helmholtz_solver/configs/helmholtz.yaml
+```
+### Evaluation
+### Without Extrapolation (k = 1, same as training)
+
+Set `inference.k` to match the training wavenumber, then run:
+
+```bash
+python evaluate.py --config helmholtz_solver/configs/helmholtz.yaml
 ```
 
+Edit `configs/helmholtz.yaml`:
+
+```yaml
+data:
+  test_path: data/helmholtz_64_test_1.mat   # test set with k=1
+
+inference:
+  k: 1        # same wavenumber as training
+  T_test: 20
+  step_size: 0.1
+```
+
+### With Extrapolation (k = 4, unseen at training)
+Change `inference.k` and the test data path to the out-of-distribution set:
+
+```yaml
+data:
+  test_path: data/helmholtz_64_test_4.mat   # test set with k=4
+
+inference:
+  k: 4        # larger wavenumber, not seen during training
+  T_test: 120  # need larger iterations
+  step_size: 0.07
+```
+
+Then run:
+
+```bash
+python evaluate.py --config configs/helmholtz.yaml
+```
 
 - 
