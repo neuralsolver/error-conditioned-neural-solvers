@@ -4,8 +4,9 @@ channels:
   - nvidia
   - conda-forge
   - defaults
+
 dependencies:
-  - python=3.12
+  - python=3.10
   - pytorch
   - torchvision
   - pytorch-cuda=12.1
@@ -16,4 +17,4 @@ dependencies:
   - pyyaml
   - pip
   - pip:
-    - neuraloperator
+      - neuraloperator
