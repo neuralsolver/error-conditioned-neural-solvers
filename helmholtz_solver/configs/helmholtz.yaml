@@ -28,8 +28,8 @@ pde:
 
 inference:
   k: 4                   # wavenumber used at test time (extrapolation)
-  T_test: 120            # iterative correction steps at test time
-  step_size: 0.07        # correction step size at test time
+  T_test: 20            # iterative correction steps at test time
+  step_size: 0.1       # correction step size at test time
   checkpoint: checkpoints/helmholtz.pth
   results_dir: results/
   vis_sample_idx: 13    # which test sample to visualize
