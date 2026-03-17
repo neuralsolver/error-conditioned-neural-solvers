@@ -1,12 +1,10 @@
 """
-Train an iterative two-model Helmholtz PDE solver.
-
 Architecture:
-  model0: initial predictor  -- input: [f, zeros, zeros]  (3 channels)
+  model0: initial predictor  -- input: f  (1 channel)
   model1: iterative corrector -- input: [f, u_pred, l_pde] (3 channels)
 
 Training loop (T steps per sample):
-  u_pred = model0([f, 0, 0])
+  u_pred = model0(f)
   for t in range(T):
       l_pde  = PDELossHZ(u_pred, f, k)
       delta  = model1([f, u_pred, l_pde])
@@ -15,7 +13,7 @@ Training loop (T steps per sample):
   loss /= T
 
 Usage:
-    python train.py --config configs/helmholtz.yaml
+    python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
 """
 
 import argparse
@@ -107,8 +105,8 @@ def train(cfg):
             optimizer.zero_grad()
 
             # --- initial prediction ---
-            zeros = torch.zeros_like(u_batch)
-            u_pred = model0(torch.cat([f_batch, zeros, zeros], dim=1))
+            #zeros = torch.zeros_like(u_batch)
+            u_pred = model0(f_batch)
 
             # --- iterative correction ---
             data_loss = 0.0
