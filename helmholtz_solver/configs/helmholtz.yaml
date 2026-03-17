@@ -1,7 +1,7 @@
 # Helmholtz PDE Solver Configuration
 
 data:
-  train_path: data/helmholtz_64_train_demo.mat
+  train_path: helmholtz_solver/data/helmholtz_64_train_demo.mat
   test_path: data/helmholtz_64_test_4.mat
   n_test: 100
 
