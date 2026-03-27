@@ -80,6 +80,7 @@ def train(cfg):
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
         lr=cfg['training']['lr'],
+        weight_decay=1e-4)
     )
     criterion = nn.MSELoss()
     pde_loss_fn = PDELossHZ()
