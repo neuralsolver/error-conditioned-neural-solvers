@@ -13,7 +13,7 @@ Training loop (T steps per sample):
   loss /= T
 
 Usage:
-    python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
+    python -m poisson_solver.train --config helmholtz_solver/configs/helmholtz.yaml
 """
 
 import argparse
@@ -50,22 +50,18 @@ def load_data(cfg):
     return loader
 
 
-def build_model(cfg, device):
-    mc = cfg['model']
+def build_model(mc, device):
     if mc['type'] == 'FNO_CNN':
-        def make():
-            return FNO_CNN(
-                in_channels=mc['in_channels'],
-                out_channels=mc['out_channels'],
-                hidden_channels=mc['hidden_channels'],
-                n_modes=tuple(mc['n_modes']),
-                n_layers=mc['n_layers'],
-            ).to(device)
-        return make(), make()
+          return FNO_CNN(
+              in_channels=mc['in_channels'],
+              out_channels=mc['out_channels'],
+              hidden_channels=mc['hidden_channels'],
+              n_modes=tuple(mc['n_modes']),
+              n_layers=mc['n_layers'],
+          ).to(device)
+      
     elif mc['type'] == 'UNet':
-        def make():
-            return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
+          return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
@@ -75,7 +71,8 @@ def train(cfg):
     set_seed(cfg['training']['seed'])
 
     loader = load_data(cfg)
-    model0, model1 = build_model(cfg, device)
+    model0 = build_model(cfg['model0'], device)
+    model1 = build_model(cfg['model1'], device)
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
