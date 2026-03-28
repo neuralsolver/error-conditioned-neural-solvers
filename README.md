@@ -22,7 +22,8 @@ $$\nabla^2 u + k^2 u = f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \par
 
 ### Training
 ```bash
-python  helmholtz_solver/train.py --config helmholtz_solver/configs/helmholtz.yaml
+cd Self-correction1-PDE/
+python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
 ```
 ### Evaluation
 ### Without Extrapolation (k = 1, same as training)
