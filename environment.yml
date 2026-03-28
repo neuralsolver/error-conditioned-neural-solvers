@@ -1,4 +1,4 @@
-name: helmholtz
+name: poisson
 channels:
   - pytorch
   - nvidia
