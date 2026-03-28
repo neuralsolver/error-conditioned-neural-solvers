@@ -1,17 +1,25 @@
 # Helmholtz PDE Solver Configuration
 
 data:
-  train_path: helmholtz_solver/data/helmholtz_64_train_demo.mat
-  test_path: helmholtz_solver/data/helmholtz_64_test_demo.mat
+  train_path: burger_solver/data/burger_64_train_demo.mat
+  test_path: burger_solver/data/burger_64_test_demo.mat
   n_test: 100
 
-model:
+model0:
   type: FNO_CNN          # options: FNO_CNN, UNet
-  in_channels: 3         # [f, u_pred, l_pde]
+  in_channels: 1         # [f, u_pred, l_pde]
   out_channels: 1
   hidden_channels: 64
   n_modes: [20, 20]
   n_layers: 4
+
+model1:
+type: FNO_CNN          # options: FNO_CNN, UNet
+in_channels: 3         # [f, u_pred, l_pde]
+out_channels: 1
+hidden_channels: 64
+n_modes: [20, 20]
+n_layers: 4
 
 training:
   seed: 33
@@ -24,10 +32,10 @@ training:
   log_interval: 10
 
 pde:
-  k: 1                   # wavenumber used during training
+  visc: 1e-2                   # viscosity used during training
 
 inference:
-  k: 1                 # wavenumber used at test time (extrapolation)
+  k: 1e-2                 # viscosity used at test time (extrapolation)
   T_test: 20            # iterative correction steps at test time
   step_size: 0.1       # correction step size at test time
   checkpoint: checkpoints/helmholtz.pth
