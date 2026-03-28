@@ -30,6 +30,7 @@ training:
   alpha: 0.1             # correction step size during training
   save_path: checkpoints/helmholtz.pth
   log_interval: 10
+  residual_mode: "real"  # real, zero, random
 
 pde:
   k: 1                   # wavenumber used during training
