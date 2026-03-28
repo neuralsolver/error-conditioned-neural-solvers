@@ -75,8 +75,8 @@ def train(cfg):
     set_seed(cfg['training']['seed'])
 
     loader = load_data(cfg)
-    model0 = build_model(cfg.model0, device)
-    model1 = build_model(cfg.model1, device)
+    model0 = build_model(cfg['model0'], device)
+    model1 = build_model(cfg['model1'], device)
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
