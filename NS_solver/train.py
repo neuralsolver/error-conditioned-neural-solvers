@@ -110,6 +110,7 @@ def train(cfg):
     T = cfg['training']['T']
     alpha = cfg['training']['alpha']
     visc = cfg['pde']['visc']
+    dt = cfg['pde']['dt']
     n_epochs = cfg['training']['n_epochs']
     log_interval = cfg['training']['log_interval']
 
@@ -133,14 +134,14 @@ def train(cfg):
 
             # --- initial prediction ---
             #zeros = torch.zeros_like(u_batch)
-            u_pred = model0(f_batch)
+            u_pred = model0(u0_batch)
 
             # --- iterative correction ---
             data_loss = 0.0
             for _ in range(T):
                 with torch.no_grad():
-                    l_pde = pde_loss_fn(u_pred, f_batch, k)
-                    input_data = torch.cat([f_batch, u_pred, l_pde], dim=1)
+                    l_pde = pde_loss_fn(u_pred, f, visc, dt)
+                    input_data = torch.cat([u0_batch, u_pred, l_pde], dim=1)
                   
                 u_correction = model1(input_data)
                 u_pred = u_pred + alpha * u_correction
