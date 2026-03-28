@@ -35,8 +35,8 @@ pde:
   visc: 0.001                   # viscosity used during training
   forcing: 
     type: "cosine_xy"  # 'cosine_y' for KF
-      amplitude: 0.1
-      frequency: 4
+    amplitude: 0.1
+    frequency: 4
   dt: 0.1
       
 inference:s
