@@ -123,7 +123,7 @@ def train(cfg):
         epoch_loss = 0.0
 
         for u_batch, f_batch in loader:
-            u_batch = u_batch.to(device)   # [B, 1, S, S]
+            u_batch = u_batch.to(device)   # [B, 20, S, S]
             u0_batch = u0_batch.to(device)
             S = u_batch.shape[-1]
            
@@ -169,7 +169,7 @@ def train(cfg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='configs/helmholtz.yaml')
+    parser.add_argument('--config', type=str, default='configs/NS.yaml')
     args = parser.parse_args()
 
     with open(args.config) as f:
