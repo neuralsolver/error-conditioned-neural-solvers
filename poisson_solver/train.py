@@ -40,7 +40,7 @@ def set_seed(seed):
 
 def load_data(cfg):
     data = scipy.io.loadmat(cfg['data']['train_path'])
-    U = torch.from_numpy(data['psi_data']).float().unsqueeze(1)
+    U = torch.from_numpy(data['phi_data']).float().unsqueeze(1)
     F = torch.from_numpy(data['f_data']).float().unsqueeze(1)
     loader = DataLoader(
         TensorDataset(U, F),
