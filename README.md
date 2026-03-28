@@ -33,7 +33,7 @@ python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yam
 Set `inference.k` to match the training wavenumber, then run:
 
 ```bash
-python evaluate.py --config helmholtz_solver/configs/helmholtz.yaml
+python -m helmholtz_solver.evaluate --config helmholtz_solver/configs/helmholtz.yaml
 ```
 
 Edit `configs/helmholtz.yaml`:
