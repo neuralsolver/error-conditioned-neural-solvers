@@ -50,8 +50,7 @@ def load_data(cfg):
     return loader
 
 
-def build_model(cfg, device):
-    mc = cfg['model']
+def build_model(mc, device):
     if mc['type'] == 'FNO_CNN':
         def make():
             return FNO_CNN(
