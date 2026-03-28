@@ -67,7 +67,7 @@ def evaluate(cfg):
 
     test_u, test_f = load_test_data(cfg, device)
     criterion = nn.MSELoss()
-    pde_loss_fn = PDELossHZ()
+    pde_loss_fn = PDELossPS()
 
     k = ic['k']
     step_size = ic['step_size']
@@ -100,13 +100,13 @@ def evaluate(cfg):
     axes[0].plot(test_losses)
     axes[0].set_xlabel('T_test')
     axes[0].set_ylabel('Reconstruction Loss')
-    axes[0].set_title(f'Helmholtz (train k={cfg["pde"]["k"]}, test k={k})')
+    axes[0].set_title(f'Poisson (train k={cfg["pde"]["k"]}, test k={k})')
     axes[0].grid()
 
     axes[1].plot(np.log(pde_residuals))
     axes[1].set_xlabel('T_test')
     axes[1].set_ylabel('log(PDE Residual)')
-    axes[1].set_title(f'Helmholtz (train k={cfg["pde"]["k"]}, test k={k})')
+    axes[1].set_title(f'Poisson (train k={cfg["pde"]["k"]}, test k={k})')
     axes[1].grid()
 
     plt.tight_layout()
