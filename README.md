@@ -64,5 +64,5 @@ inference:
 Then run:
 
 ```bash
-!python -m helmholtz_solver.evaluate --config helmholtz_solver/configs/helmholtz.yaml
+python -m helmholtz_solver.evaluate --config helmholtz_solver/configs/helmholtz.yaml
 ```
