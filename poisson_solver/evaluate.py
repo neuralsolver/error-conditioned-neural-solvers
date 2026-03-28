@@ -1,5 +1,5 @@
 """
-Iterative evaluation of a trained two-model Helmholtz solver.
+Iterative evaluation of a trained two-model Poisson solver.
 
 At test time:
   u_pred = model0(f)
@@ -9,7 +9,7 @@ At test time:
       u_pred = u_pred + step_size * delta
 
 Usage:
-    python evaluate.py --config configs/helmholtz.yaml
+    python evaluate.py --config configs/poisson.yaml
 """
 
 import argparse
