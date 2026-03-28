@@ -60,11 +60,9 @@ def build_model(mc, device):
                 n_modes=tuple(mc['n_modes']),
                 n_layers=mc['n_layers'],
             ).to(device)
-        return make(), make()
     elif mc['type'] == 'UNet':
         def make():
             return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
