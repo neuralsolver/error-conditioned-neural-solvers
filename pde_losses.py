@@ -177,7 +177,7 @@ class PDELossNS2d(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def forward(self, w, f, nu, dt=0.1):
+    def forward(self, w, f, nu, dt):
         assert w.ndim == 4
         B, T, N, N2 = w.shape
         assert N == N2
