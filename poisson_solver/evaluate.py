@@ -29,7 +29,7 @@ from pde_losses import PDELossPS
 def load_test_data(cfg, device):
     data = scipy.io.loadmat(cfg['data']['test_path'])
     n = cfg['data']['n_test']
-    U = torch.from_numpy(data['psi_data'][:n]).float().unsqueeze(1).to(device)
+    U = torch.from_numpy(data['phi_data'][:n]).float().unsqueeze(1).to(device)
     F = torch.from_numpy(data['f_data'][:n]).float().unsqueeze(1).to(device)
     return U, F
 
