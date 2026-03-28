@@ -2,10 +2,10 @@
 Iterative evaluation of a trained two-model Helmholtz solver.
 
 At test time:
-  u_pred = model0(f)
+  u_pred = model0(u0)
   for t in range(T_test):
-      l_pde  = PDELossHZ(u_pred, f, k_test)
-      delta  = model1([f, u_pred, l_pde])
+      l_pde  = PDELossNS(u_pred, f, visc, dt)
+      delta  = model1([u0, u_pred, l_pde])
       u_pred = u_pred + step_size * delta
 
 Usage:
@@ -29,27 +29,24 @@ from pde_losses import PDELossHZ
 def load_test_data(cfg, device):
     data = scipy.io.loadmat(cfg['data']['test_path'])
     n = cfg['data']['n_test']
-    U = torch.from_numpy(data['psi_data'][:n]).float().unsqueeze(1).to(device)
-    F = torch.from_numpy(data['f_data'][:n]).float().unsqueeze(1).to(device)
-    return U, F
+    U = torch.from_numpy(data['u']).permute(0,3,1,2).float().to(device)
+    U_0 = torch.from_numpy(data['a']).float().unsqueeze(1).to(device)
+    return U, U_0
 
 
-def build_models(cfg, device):
-    mc = cfg['model']
+def build_models(mc, device):
     if mc['type'] == 'FNO_CNN':
-        def make():
-            return FNO_CNN(
-                in_channels=mc['in_channels'],
-                out_channels=mc['out_channels'],
-                hidden_channels=mc['hidden_channels'],
-                n_modes=tuple(mc['n_modes']),
-                n_layers=mc['n_layers'],
-            ).to(device)
-        return make(), make()
+          return FNO_CNN(
+              in_channels=mc['in_channels'],
+              out_channels=mc['out_channels'],
+              hidden_channels=mc['hidden_channels'],
+              n_modes=tuple(mc['n_modes']),
+              n_layers=mc['n_layers'],
+          ).to(device)
+      
     elif mc['type'] == 'UNet':
-        def make():
-            return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
+          return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
+      
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
@@ -65,7 +62,7 @@ def evaluate(cfg):
     model0.eval()
     model1.eval()
 
-    test_u, test_f = load_test_data(cfg, device)
+    test_u, test_u0 = load_test_data(cfg, device)
     criterion = nn.MSELoss()
     pde_loss_fn = PDELossHZ()
 
