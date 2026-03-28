@@ -14,12 +14,12 @@ model0:
   n_layers: 4
 
 model1:
-type: FNO_CNN          
-in_channels: 3         
-out_channels: 1
-hidden_channels: 64
-n_modes: [20, 20]
-n_layers: 4
+  type: FNO_CNN          
+  in_channels: 3         
+  out_channels: 1
+  hidden_channels: 64
+  n_modes: [20, 20]
+  n_layers: 4
 
 training:
   seed: 33
