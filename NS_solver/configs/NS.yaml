@@ -39,13 +39,13 @@ pde:
     frequency: 4
   dt: 0.1
       
-inference:s
+inferences:
   visc: 0.001                # viscosity used at test time (extrapolation)
   
   forcing: 
     type: "cosine_xy"        # forxing used at test time (extrapolation_
-      amplitude: 0.1
-      frequency: 4
+    amplitude: 0.1
+    frequency: 4
       
   dt: 0.1
   
