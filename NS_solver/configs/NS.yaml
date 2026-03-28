@@ -37,8 +37,9 @@ pde:
     type: "cosine_xy"  # 'cosine_y' for KF
       amplitude: 0.1
       frequency: 4
+  dt: 0.1
       
-inference:
+inference:s
   visc: 0.001                # viscosity used at test time (extrapolation)
   
   forcing: 
@@ -46,6 +47,8 @@ inference:
       amplitude: 0.1
       frequency: 4
       
+  dt: 0.1
+  
   T_test: 20            # iterative correction steps at test time
   step_size: 0.1       # correction step size at test time
   checkpoint: checkpoints/NS.pth
