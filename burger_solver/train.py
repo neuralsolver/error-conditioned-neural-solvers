@@ -112,7 +112,7 @@ def train(cfg):
           
             for _ in range(T):
                 with torch.no_grad():
-                    l_pde = pde_loss_fn(u_pred, f_batch, k)
+                    l_pde = pde_loss_fn(u_pred, nu=visc)
                     input_data = torch.cat([u0_batch, u_pred, l_pde], dim=1)
                   
                 u_correction = model1(input_data)
