@@ -32,10 +32,10 @@ training:
   log_interval: 10
 
 pde:
-  visc: 1e-2                   # viscosity used during training
+  visc: 0.01                  # viscosity used during training
 
 inference:
-  visc: 1e-2                 # viscosity used at test time (extrapolation)
+  visc: 0.01              # viscosity used at test time (extrapolation)
   T_test: 20            # iterative correction steps at test time
   step_size: 0.1       # correction step size at test time
   checkpoint: checkpoints/burger.pth
