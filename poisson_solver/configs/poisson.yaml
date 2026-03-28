@@ -5,13 +5,22 @@ data:
   test_path: poisson_solver/data/poisson_64_test_demo.mat
   n_test: 100
 
-model:
-  type: FNO_CNN          # options: FNO_CNN, UNet
-  in_channels: 3         # [f, u_pred, l_pde]
+model0:
+  type: FNO_CNN
+  in_channels: 1
   out_channels: 1
   hidden_channels: 64
   n_modes: [20, 20]
   n_layers: 4
+
+model1:
+  type: FNO_CNN
+  in_channels: 3
+  out_channels: 1
+  hidden_channels: 64
+  n_modes: [20, 20]
+  n_layers: 4
+
 
 training:
   seed: 33
@@ -27,9 +36,9 @@ pde:
   k: 1                   # wavenumber used during training
 
 inference:
-  k: 1                 # wavenumber used at test time (extrapolation)
+  k: 1                  # wavenumber used at test time (extrapolation)
   T_test: 20            # iterative correction steps at test time
   step_size: 0.1       # correction step size at test time
-  checkpoint: checkpoints/helmholtz.pth
+  checkpoint: checkpoints/poisson.pth
   results_dir: results/
   vis_sample_idx: 13    # which test sample to visualize
