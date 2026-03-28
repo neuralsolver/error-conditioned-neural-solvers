@@ -28,7 +28,7 @@ import yaml
 from torch.utils.data import DataLoader, TensorDataset
 
 from helmholtz_solver.models import FNO_CNN, UNet
-from pde_losses import PDELossHZ
+from pde_losses import PDELossNS2d
 
 
 def set_seed(seed):
@@ -40,42 +40,64 @@ def set_seed(seed):
 
 def load_data(cfg):
     data = scipy.io.loadmat(cfg['data']['train_path'])
-    U = torch.from_numpy(data['psi_data']).float().unsqueeze(1)
-    F = torch.from_numpy(data['f_data']).float().unsqueeze(1)
+    U = torch.from_numpy(data['u']).permute(0,3,1,2).float()
+    U_0 = torch.from_numpy(data['a']).float().unsqueeze(1)
     loader = DataLoader(
-        TensorDataset(U, F),
+        TensorDataset(U, U_0),
         batch_size=cfg['training']['batch_size'],
         shuffle=True,
     )
     return loader
 
 
-def build_model(cfg, device):
-    mc = cfg['model']
+def build_model(mc, device):
     if mc['type'] == 'FNO_CNN':
-        def make():
-            return FNO_CNN(
-                in_channels=mc['in_channels'],
-                out_channels=mc['out_channels'],
-                hidden_channels=mc['hidden_channels'],
-                n_modes=tuple(mc['n_modes']),
-                n_layers=mc['n_layers'],
-            ).to(device)
-        return make(), make()
+          return FNO_CNN(
+              in_channels=mc['in_channels'],
+              out_channels=mc['out_channels'],
+              hidden_channels=mc['hidden_channels'],
+              n_modes=tuple(mc['n_modes']),
+              n_layers=mc['n_layers'],
+          ).to(device)
+      
     elif mc['type'] == 'UNet':
-        def make():
-            return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
+          return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
+      
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
+def build_forcing(cfg, device, S):
+    a = torch.linspace(0, 1, S+1, device=device)[:-1]
+    X, Y = torch.meshgrid(a, a, indexing='ij')
+
+    forcing_cfg = cfg['pde']['forcing']
+    f_type = forcing_cfg['type']
+
+    if f_type == "cosine_y":
+        amp = forcing_cfg.get('amplitude', 1.0)
+        freq = forcing_cfg.get('frequency', 1)
+
+        f = amp * torch.cos(2 * math.pi * freq * Y)
+
+    elif f_type == "cosine_xy":
+        amp = forcing_cfg.get('amplitude', 1.0)
+        freq = forcing_cfg.get('frequency', 1)
+
+        f = amp * (torch.cos(2 * math.pi * freq * X) +
+                   torch.cos(2 * math.pi * freq * Y))
+
+    else:
+        raise ValueError(f"Unknown forcing type: {f_type}")
+
+    return f
 
 def train(cfg):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     set_seed(cfg['training']['seed'])
 
     loader = load_data(cfg)
-    model0, model1 = build_model(cfg, device)
+    model0 = build_model(cfg['model0'], device)
+    model1 = build_model(cfg['model1'], device)
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
@@ -83,11 +105,11 @@ def train(cfg):
         weight_decay=1e-4)
   
     criterion = nn.MSELoss()
-    pde_loss_fn = PDELossHZ()
+    pde_loss_fn = PDELossNS2d()
 
     T = cfg['training']['T']
     alpha = cfg['training']['alpha']
-    k = cfg['pde']['k']
+    visc = cfg['pde']['visc']
     n_epochs = cfg['training']['n_epochs']
     log_interval = cfg['training']['log_interval']
 
@@ -101,8 +123,12 @@ def train(cfg):
 
         for u_batch, f_batch in loader:
             u_batch = u_batch.to(device)   # [B, 1, S, S]
-            f_batch = f_batch.to(device)
-
+            u0_batch = u0_batch.to(device)
+            S = u_batch.shape[-1]
+           
+            f = build_forcing(cfg, device, S)   
+            f = f.unsqueeze(0).unsqueeze(0)  
+          
             optimizer.zero_grad()
 
             # --- initial prediction ---
