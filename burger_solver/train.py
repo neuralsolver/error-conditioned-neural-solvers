@@ -4,16 +4,16 @@ Architecture:
   model1: iterative corrector -- input: [f, u_pred, l_pde] (3 channels)
 
 Training loop (T steps per sample):
-  u_pred = model0(f)
+  u_pred = model0(u0)
   for t in range(T):
-      l_pde  = PDELossHZ(u_pred, f, k)
-      delta  = model1([f, u_pred, l_pde])
+      l_pde  = PDELossBurgerSpec(u_pred, visc)
+      delta  = model1([u0, u_pred, l_pde])
       u_pred = u_pred + alpha * delta
       loss  += MSE(u_pred, u_true)
   loss /= T
 
 Usage:
-    python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
+    python -m burger_solver.train --config burger_solver/configs/burger.yaml
 """
 
 import argparse
@@ -28,7 +28,7 @@ import yaml
 from torch.utils.data import DataLoader, TensorDataset
 
 from helmholtz_solver.models import FNO_CNN, UNet
-from pde_losses import PDELossHZ
+from pde_losses import PDELossBurgerSpec
 
 
 def set_seed(seed):
@@ -40,32 +40,29 @@ def set_seed(seed):
 
 def load_data(cfg):
     data = scipy.io.loadmat(cfg['data']['train_path'])
-    U = torch.from_numpy(data['psi_data']).float().unsqueeze(1)
-    F = torch.from_numpy(data['f_data']).float().unsqueeze(1)
+    U = torch.from_numpy(data['output'][:,1:,:]).float().unsqueeze(1)
+    U0 = torch.zeros_like(U).to(device)
+    U0[:, :, 0, :] = torch.from_numpy(data['input']).float().unsqueeze(1)
     loader = DataLoader(
-        TensorDataset(U, F),
+        TensorDataset(U, U0),
         batch_size=cfg['training']['batch_size'],
         shuffle=True,
     )
     return loader
 
 
-def build_model(cfg, device):
-    mc = cfg['model']
+def build_model(mc, device):
     if mc['type'] == 'FNO_CNN':
-        def make():
-            return FNO_CNN(
-                in_channels=mc['in_channels'],
-                out_channels=mc['out_channels'],
-                hidden_channels=mc['hidden_channels'],
-                n_modes=tuple(mc['n_modes']),
-                n_layers=mc['n_layers'],
-            ).to(device)
-        return make(), make()
+          return FNO_CNN(
+              in_channels=mc['in_channels'],
+              out_channels=mc['out_channels'],
+              hidden_channels=mc['hidden_channels'],
+              n_modes=tuple(mc['n_modes']),
+              n_layers=mc['n_layers'],
+          ).to(device)
+      
     elif mc['type'] == 'UNet':
-        def make():
-            return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
+          return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
@@ -75,7 +72,8 @@ def train(cfg):
     set_seed(cfg['training']['seed'])
 
     loader = load_data(cfg)
-    model0, model1 = build_model(cfg, device)
+    model0 = build_model(cfg['model0'], device)
+    model1 = build_model(cfg['model1'], device)
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
@@ -83,11 +81,11 @@ def train(cfg):
         weight_decay=1e-4)
   
     criterion = nn.MSELoss()
-    pde_loss_fn = PDELossHZ()
+    pde_loss_fn = PDELossBurgerSpec()
 
     T = cfg['training']['T']
     alpha = cfg['training']['alpha']
-    k = cfg['pde']['k']
+    visc = cfg['pde']['visc']
     n_epochs = cfg['training']['n_epochs']
     log_interval = cfg['training']['log_interval']
 
@@ -99,18 +97,19 @@ def train(cfg):
         model1.train()
         epoch_loss = 0.0
 
-        for u_batch, f_batch in loader:
+        for u_batch, u0_batch in loader:
             u_batch = u_batch.to(device)   # [B, 1, S, S]
-            f_batch = f_batch.to(device)
+            u0_batch = u0_batch.to(device)
 
             optimizer.zero_grad()
 
             # --- initial prediction ---
             #zeros = torch.zeros_like(u_batch)
-            u_pred = model0(f_batch)
+            u_pred = model0(u0_batch)
 
             # --- iterative correction ---
-            data_loss = 0.0
+            data_loss = criterion(u_pred, u_batch) + 1e-2*torch.mean(pde_loss_fn(u_pred, nu=visc)**2)
+          
             for _ in range(T):
                 with torch.no_grad():
                     l_pde = pde_loss_fn(u_pred, f_batch, k)
@@ -120,7 +119,7 @@ def train(cfg):
                 u_pred = u_pred + alpha * u_correction
                 data_loss += criterion(u_pred, u_batch)
 
-            data_loss = data_loss / T
+            data_loss = data_loss / (T + 1)
             data_loss.backward()
             optimizer.step()
             epoch_loss += data_loss.item()
@@ -142,7 +141,7 @@ def train(cfg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='configs/helmholtz.yaml')
+    parser.add_argument('--config', type=str, default='configs/burger.yaml')
     args = parser.parse_args()
 
     with open(args.config) as f:
