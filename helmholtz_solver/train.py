@@ -64,7 +64,6 @@ def build_model(mc, device):
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
-
 def train(cfg):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     set_seed(cfg['training']['seed'])
@@ -109,7 +108,19 @@ def train(cfg):
             data_loss = 0.0
             for _ in range(T):
                 with torch.no_grad():
-                    l_pde = pde_loss_fn(u_pred, f_batch, k)
+                    mode = cfg['training'].get('residual_mode', 'real')
+                  
+                    if mode == 'real':
+                        l_pde = pde_loss_fn(u_pred, f_batch, k)
+                      
+                    # ablation study
+                    elif mode == 'zero':
+                        l_pde = torch.zeros_like(u_pred)               
+                    elif mode == 'random':
+                        l_pde = torch.randn_like(u_pred)
+                    else:
+                        raise ValueError(f"Unknown residual_mode: {mode}")
+                      
                     input_data = torch.cat([f_batch, u_pred, l_pde], dim=1)
                   
                 u_correction = model1(input_data)
