@@ -2,7 +2,7 @@
 
 The solver uses two neural operators (CNN-FNO-CNN or U-Net): 
 
-**model0**: produces an initial prediction from the forcing field `f` 
+**model0**: produces an initial prediction from the forcing field `f`, for Helmoholtz and Poisson Equation, or intial condition `u_0` for Burgers Equation, Navier Stoke, and Komolgorov flow.
 
 **model1**: iteratively corrects the prediction using the PDE residual as feedback
 
