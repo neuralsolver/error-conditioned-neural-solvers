@@ -1,4 +1,4 @@
-# Helmholtz PDE Solver Configuration
+# Burger PDE Solver Configuration
 
 data:
   train_path: burger_solver/data/burger_64_train_demo.mat
