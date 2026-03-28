@@ -37,19 +37,16 @@ def load_test_data(cfg, device):
 def build_models(cfg, device):
     mc = cfg['model']
     if mc['type'] == 'FNO_CNN':
-        def make():
-            return FNO_CNN(
-                in_channels=mc['in_channels'],
-                out_channels=mc['out_channels'],
-                hidden_channels=mc['hidden_channels'],
-                n_modes=tuple(mc['n_modes']),
-                n_layers=mc['n_layers'],
-            ).to(device)
-        return make(), make()
+          return FNO_CNN(
+              in_channels=mc['in_channels'],
+              out_channels=mc['out_channels'],
+              hidden_channels=mc['hidden_channels'],
+              n_modes=tuple(mc['n_modes']),
+              n_layers=mc['n_layers'],
+          ).to(device)
     elif mc['type'] == 'UNet':
-        def make():
-            return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
-        return make(), make()
+          return UNet(n_channels=mc['in_channels'], n_classes=mc['out_channels']).to(device)
+      
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
 
@@ -58,7 +55,8 @@ def evaluate(cfg):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     ic = cfg['inference']
 
-    model0, model1 = build_models(cfg, device)
+    model0 = build_models(cfg['model0'], device)
+    model1 = build_models(cfg['model1'], device)
     checkpoint = torch.load(ic['checkpoint'], map_location=device, weights_only=False)
     model0.load_state_dict(checkpoint['model0_state_dict'])
     model1.load_state_dict(checkpoint['model1_state_dict'])
