@@ -6,7 +6,7 @@ Architecture:
 Training loop (T steps per sample):
   u_pred = model0(f)
   for t in range(T):
-      l_pde  = PDELossHZ(u_pred, f, k)
+      l_pde  = PDELossPS(u_pred, f, k)
       delta  = model1([f, u_pred, l_pde])
       u_pred = u_pred + alpha * delta
       loss  += MSE(u_pred, u_true)
@@ -28,7 +28,7 @@ import yaml
 from torch.utils.data import DataLoader, TensorDataset
 
 from helmholtz_solver.models import FNO_CNN, UNet
-from pde_losses import PDELossHZ
+from pde_losses import PDELossPS
 
 
 def set_seed(seed):
@@ -83,7 +83,7 @@ def train(cfg):
         weight_decay=1e-4)
   
     criterion = nn.MSELoss()
-    pde_loss_fn = PDELossHZ()
+    pde_loss_fn = PDELossPS()
 
     T = cfg['training']['T']
     alpha = cfg['training']['alpha']
@@ -142,7 +142,7 @@ def train(cfg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='configs/helmholtz.yaml')
+    parser.add_argument('--config', type=str, default='configs/poisson.yaml')
     args = parser.parse_args()
 
     with open(args.config) as f:
