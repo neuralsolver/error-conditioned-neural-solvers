@@ -2,7 +2,7 @@
 Iterative evaluation of a trained two-model Helmholtz solver.
 
 At test time:
-  u_pred = model0([f, 0, 0])
+  u_pred = model0(f)
   for t in range(T_test):
       l_pde  = PDELossHZ(u_pred, f, k_test)
       delta  = model1([f, u_pred, l_pde])
@@ -78,8 +78,7 @@ def evaluate(cfg):
 
     with torch.no_grad():
         # Initial prediction
-        zeros = torch.zeros_like(test_u)
-        u_pred = model0(torch.cat([test_f, zeros, zeros], dim=1))
+        u_pred = model0(test_f)
 
         for t in range(T):
             l_pde = pde_loss_fn(u_pred, test_f, k)
