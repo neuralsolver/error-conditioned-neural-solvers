@@ -1,4 +1,4 @@
-# Self-correction1-PDE
+# Self-correction PDE
 
 The solver uses two neural operators (CNN-FNO-CNN or U-Net): 
 
