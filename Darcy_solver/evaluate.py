@@ -1,11 +1,11 @@
 """
-Iterative evaluation of a trained two-model Helmholtz solver.
+Iterative evaluation of a trained two-model Darcy flow solver.
 
 At test time:
   u_pred = model0(f)
   for t in range(T_test):
       l_pde  = PDELossHZ(u_pred, f, k_test)
-      delta  = model1([f, u_pred, l_pde])
+      delta  = model1([f, a, u_pred, l_pde])
       u_pred = u_pred + step_size * delta
 
 Usage:
@@ -23,7 +23,7 @@ import torch.nn as nn
 import yaml
 
 from models import FNO_CNN, UNet
-from pde_losses import PDELossHZ
+from pde_losses import PDELossDarcy
 
 
 def load_test_data(cfg, device):
@@ -67,7 +67,7 @@ def evaluate(cfg):
 
     test_u, test_f = load_test_data(cfg, device)
     criterion = nn.MSELoss()
-    pde_loss_fn = PDELossHZ()
+    pde_loss_fn = PDELossDarcy()
 
     k = ic['k']
     step_size = ic['step_size']
@@ -78,14 +78,14 @@ def evaluate(cfg):
 
     with torch.no_grad():
         # Initial prediction
-        u_pred = model0(test_f)
+        u_pred = model0(test_f, test_a)
 
         for t in range(T):
-            l_pde = pde_loss_fn(u_pred, test_f, k)
-            u_correction = model1(torch.cat([test_f, u_pred, l_pde], dim=1))
+            l_pde = pde_loss_fn(u_pred, test_f, test_a)
+            u_correction = model1(torch.cat([test_f, test_a, u_pred, l_pde], dim=1))
             u_pred = u_pred + step_size * u_correction
 
-            l_pde = pde_loss_fn(u_pred, test_f, k)
+            l_pde = pde_loss_fn(u_pred, test_f, test_a)
             test_losses.append(criterion(u_pred, test_u).item())
             pde_residuals.append(torch.mean(l_pde ** 2).cpu().item())
             print(f"T={t+1:3d} | recon loss: {test_losses[-1]:.6f} | PDE residual: {pde_residuals[-1]:.6f}")
@@ -100,13 +100,13 @@ def evaluate(cfg):
     axes[0].plot(test_losses)
     axes[0].set_xlabel('T_test')
     axes[0].set_ylabel('Reconstruction Loss')
-    axes[0].set_title(f'Helmholtz (train k={cfg["pde"]["k"]}, test k={k})')
+    axes[0].set_title(f'Darcy flow')
     axes[0].grid()
 
     axes[1].plot(np.log(pde_residuals))
     axes[1].set_xlabel('T_test')
     axes[1].set_ylabel('log(PDE Residual)')
-    axes[1].set_title(f'Helmholtz (train k={cfg["pde"]["k"]}, test k={k})')
+    axes[1].set_title(f'Darcy flow')
     axes[1].grid()
 
     plt.tight_layout()
