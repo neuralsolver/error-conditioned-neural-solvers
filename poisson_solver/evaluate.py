@@ -4,7 +4,7 @@ Iterative evaluation of a trained two-model Poisson solver.
 At test time:
   u_pred = model0(f)
   for t in range(T_test):
-      l_pde  = PDELossHZ(u_pred, f, k_test)
+      l_pde  = PDELossPS(u_pred, f, k_test)
       delta  = model1([f, u_pred, l_pde])
       u_pred = u_pred + step_size * delta
 
@@ -23,7 +23,7 @@ import torch.nn as nn
 import yaml
 
 from models import FNO_CNN, UNet
-from pde_losses import PDELossHZ
+from pde_losses import PDELossPS
 
 
 def load_test_data(cfg, device):
@@ -161,7 +161,7 @@ def evaluate(cfg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='configs/helmholtz.yaml')
+    parser.add_argument('--config', type=str, default='configs/poisson.yaml')
     args = parser.parse_args()
 
     with open(args.config) as f:
