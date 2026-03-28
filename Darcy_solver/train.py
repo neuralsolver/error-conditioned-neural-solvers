@@ -1,13 +1,13 @@
 """
 Architecture:
   model0: initial predictor  -- input: f  (1 channel)
-  model1: iterative corrector -- input: [f, u_pred, l_pde] (3 channels)
+  model1: iterative corrector -- input: [f, a, u_pred, l_pde] (3 channels)
 
 Training loop (T steps per sample):
   u_pred = model0(f)
   for t in range(T):
-      l_pde  = PDELossHZ(u_pred, f, k)
-      delta  = model1([f, u_pred, l_pde])
+      l_pde  = PDELossDarcy(u_pred, f, a)
+      delta  = model1([f, a, u_pred, l_pde])
       u_pred = u_pred + alpha * delta
       loss  += MSE(u_pred, u_true)
   loss /= T
