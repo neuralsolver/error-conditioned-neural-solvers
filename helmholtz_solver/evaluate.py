@@ -22,7 +22,7 @@ import torch
 import torch.nn as nn
 import yaml
 
-from models import FNO_CNN, UNet
+from helmholtz_solver.models import FNO_CNN, UNet
 from pde_losses import PDELossHZ
 
 
