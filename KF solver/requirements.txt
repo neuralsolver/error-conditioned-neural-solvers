@@ -1,0 +1,14 @@
+torch==2.2.0
+torchvision==0.17.0
+numpy>=1.24
+scipy>=1.11
+matplotlib>=3.8
+h5py>=3.10
+einops>=0.7
+neuraloperator>=1.0.2
+jsonmerge>=1.9.2
+dctorch>=0.1.2
+torchdiffeq>=0.2.3
+torchsde>=0.2.6
+clean-fid>=0.1.35
+./wheels/natten-0.17.4+torch220cu121-cp312-cp312-linux_x86_64.whl
