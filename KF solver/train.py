@@ -28,13 +28,13 @@ def main():
     set_seed(33)
 
     #checkpoint = torch.load(CHECKPOINT_PATH,  weights_only=False)
-    model0 = build_model(1, 40).to(device)
+    model0 = build_model(1, 40)
     #model0 = FNO_CNN(in_channels=1, out_channels=20, hidden_channels=64, n_modes=(20, 20), n_layers=4).to(device)
     #model1 = FNO_CNN(in_channels=39, out_channels=20, hidden_channels=64, n_modes=(20, 20), n_layers=4).to(device)
-    model1 = build_model(79, 40).to(device)
+    model1 = build_model(79, 40)
 
-    model0 = apply_cnn_ff(model0)
-    model1 = apply_cnn_ff(model1)
+    model0 = apply_cnn_ff(model0).to(device)
+    model1 = apply_cnn_ff(model1).to(device)
 
     #model0.load_state_dict(checkpoint['model0_state_dict'])
     #model1.load_state_dict(checkpoint['model1_state_dict'])
