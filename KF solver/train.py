@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(".").resolve()))
 
 from model import build_model, apply_cnn_ff
 from data import load_data, build_forcing, build_train_loader
-from pde import residual_map_vorticity2d
+from pde_loss import residual_map_vorticity2d
 from utils import device, sigma_model0, sigma_model1, set_seed
 
 
