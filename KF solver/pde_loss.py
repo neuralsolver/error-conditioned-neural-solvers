@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import math
 
 import torch
@@ -16,23 +14,6 @@ def build_kolmogorov_forcing(
     x, y = torch.meshgrid(grid, grid, indexing="ij")
     del x
     return amplitude * torch.cos(2 * math.pi * wavenumber * y)
-
-
-def _spectral_wavenumbers(size: int, device: torch.device, dtype: torch.dtype):
-    k_max = math.floor(size / 2.0)
-    base = torch.cat(
-        (
-            torch.arange(0, k_max, device=device, dtype=dtype),
-            torch.arange(-k_max, 0, device=device, dtype=dtype),
-        ),
-        dim=0,
-    )
-    k_y = base.repeat(size, 1)
-    k_x = k_y.transpose(0, 1)
-    laplacian = 4 * (math.pi**2) * (k_x**2 + k_y**2)
-    laplacian[0, 0] = 1.0
-    return k_x, k_y, laplacian
-
 
 def residual_map_vorticity2d(
     w: torch.Tensor,
@@ -53,7 +34,18 @@ def residual_map_vorticity2d(
     dtype = w.dtype
     forcing = forcing.to(device=device, dtype=dtype).unsqueeze(0).unsqueeze(0)
 
-    k_x, k_y, laplacian = _spectral_wavenumbers(height, device, dtype)
+    k_max = math.floor(size / 2.0)
+    base = torch.cat(
+        (
+            torch.arange(0, k_max, device=device, dtype=dtype),
+            torch.arange(-k_max, 0, device=device, dtype=dtype),
+        ),
+        dim=0,
+    )
+    k_y = base.repeat(size, 1)
+    k_x = k_y.transpose(0, 1)
+    laplacian = 4 * (math.pi**2) * (k_x**2 + k_y**2)
+    laplacian[0, 0] = 1.0
 
     wt = torch.empty_like(w)
     wt[:, 0] = (w[:, 1] - w[:, 0]) / dt
@@ -72,11 +64,6 @@ def residual_map_vorticity2d(
     return residual[:, 1:-1]
 
 
-def residual_mse(
-    w: torch.Tensor,
-    forcing: torch.Tensor,
-    viscosity: float,
-    dt: float = 0.1,
-):
+def residual_mse(w: torch.Tensor, forcing: torch.Tensor, viscosity: float, dt: float = 0.1,):
     residual = residual_map_vorticity2d(w=w, forcing=forcing, viscosity=viscosity, dt=dt)
     return torch.mean(residual**2)
