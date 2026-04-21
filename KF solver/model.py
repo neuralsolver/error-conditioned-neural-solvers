@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 
 import torch
@@ -15,7 +13,6 @@ from k_diffusion.models.image_transformer_v2 import (
 )
 
 
-@dataclass
 class TransformerConfig:
     depths: list[int] = field(default_factory=lambda: [2, 11])
     widths: list[int] = field(default_factory=lambda: [384, 768])
@@ -25,11 +22,9 @@ class TransformerConfig:
     mapping_depth: int = 1
     mapping_width: int = 768
 
-    @property
     def d_ffs(self):
         return [width * 3 for width in self.widths]
 
-    @property
     def mapping_d_ff(self):
         return self.mapping_width * 3
 
@@ -109,11 +104,11 @@ def build_model(
         out_channels=out_channels,
         patch_size=list(config.patch_size),
     )
-    _replace_shallow_feedforward(model, config)
+    replace_feedforward(model, config)
     return model
 
 
-def _replace_shallow_feedforward(
+def replace_feedforward(
     model: ImageTransformerDenoiserModelV2Orig,
     config: TransformerConfig,
 ):
@@ -156,11 +151,6 @@ def sigma_model0(batch_size: int, device: torch.device):
     return torch.ones(batch_size, device=device)
 
 
-def sigma_model1(
-    step_index: int,
-    total_steps: int,
-    batch_size: int,
-    device: torch.device,
-):
+def sigma_model1(step_index: int, total_steps: int, batch_size: int, device: torch.device):
     value = (step_index + 1) / total_steps
     return torch.full((batch_size,), value, device=device)
