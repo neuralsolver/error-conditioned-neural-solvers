@@ -16,7 +16,7 @@ where $\mathcal{R}(u)$ is the PDE residual.
 
 ```bash
 conda env create -f environment.yml
-conda activate helmholtz
+conda activate Feed-Forward-ENS
 ```
 
 ## Helmoholtz Equation
