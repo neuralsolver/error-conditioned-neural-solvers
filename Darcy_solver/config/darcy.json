@@ -18,22 +18,22 @@
   },
   "training": {
     "batch_size": 64,
-    "n_epochs": 5000,
+    "n_epochs": 10000,
     "T": 5,
     "correction_step": 0.02,
     "pde_weight": 0.0,
     "learning_rate": 0.0001,
     "weight_decay": 0.0001,
     "resume_checkpoint": null,
-    "save_checkpoint": "checkpoints/128_5_new.pth",
+    "save_checkpoint": "checkpoints/ENS_Darcy.pth",
     "save_loss": "results/train_loss.npy",
     "print_every": 10
   },
   "testing": {
     "batch_size": 32,
-    "T": 120,
-    "correction_step": 0.005,
-    "checkpoint": "checkpoints/128_5_new.pth",
+    "T": 20,
+    "correction_step": 0.02,
+    "checkpoint": "checkpoints/ENS_Darcy.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
     "save_pde_loss": "results/test_pde.npy"
   }
