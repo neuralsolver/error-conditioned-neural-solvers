@@ -1,3 +1,4 @@
+name: Feed-Forward-ENS
 channels:
   - pytorch
   - nvidia
