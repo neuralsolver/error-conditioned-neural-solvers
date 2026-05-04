@@ -71,6 +71,56 @@ Zero-shot test on Poisson equation:
 python -u evaluate.py --config config/hz_crossequation.json
 ```
 
+## Poisson Equation
+$$\nabla^2 u = \alpha f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \partial\Omega$$ 
+
+We use $\alpha=2$ with $128 \times 128$ resolution for training. 
+
+### Setup
+```bash
+pip install -r PS_solver/requirements.txt
+```
+
+### Training
+Train from scratch:
+
+```bash
+cd PS_solver
+python -u train.py --config config/ps.json
+```
+
+### Evaluation
+#### Indistribution:
+Use a Poisson test set with the same equation setting as training.
+
+```bash
+python -u evaluate.py --config config/ps.json
+```
+#### Extrapolation:
+Use a Poisson test set generated with a different scaling factor.
+
+Example for $\alpha=1$:
+
+```bash
+python -u evaluate.py --config config/ps_extrapolation.json
+```
+
+#### Super-resolution:
+Use a higher-resolution Helmholtz test set.
+
+Example for $256 \times 256$:
+
+```bash
+python -u evaluate.py --config config/ps_superresolution.json
+```
+
+#### Cross-equation:
+Zero-shot test on Helmholtz equation:
+
+```bash
+python -u evaluate.py --config config/ps_crossequation.json
+```
+
 
 
 
