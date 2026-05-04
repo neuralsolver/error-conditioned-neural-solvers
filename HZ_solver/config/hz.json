@@ -35,7 +35,7 @@
     "batch_size": 32,
     "T": 20,
     "correction_step": 0.03,
-    "checkpoint": "checkpoints/128_5_new.pth",
+    "checkpoint": "checkpoints/ENS_HZ.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
     "save_pde_loss": "results/test_pde.npy"
   }
