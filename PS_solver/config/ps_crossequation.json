@@ -15,9 +15,9 @@
     "n_layers": 4
   },
  "pde": {
-    "type": "PS",
-    "k": 2
-   '
+    "type": "HZ",
+    "k": 1,
+    "lamb": 0
   },
   "testing": {
     "batch_size": 32,
