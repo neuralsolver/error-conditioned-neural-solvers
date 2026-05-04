@@ -69,12 +69,23 @@ def main():
     print(f"test_u shape: {tuple(test_u.shape)}, test_f shape: {tuple(test_f.shape)}")
 
     loss = nn.MSELoss()
-    pde_loss_grid = PDELossPS()
-    model0, model1 = build_models(config, device)
 
-    testing = config["testing"]
     pde_config = config["pde"]
-    k = pde_config["k"]
+    loss_type = pde_config.get("loss_type", "ps").lower()
+    
+    if loss_type in ["hz", "helmholtz"]:
+        pde_loss_grid = PDELossHZ()
+        k = pde_config["k"]
+        lamb = pde_config.get("lamb", 0)
+    elif loss_type in ["ps", "poisson"]:
+        pde_loss_grid = PDELossPS()
+        k = pde_config["k"]
+    else:
+        raise ValueError(f"Unknown pde type: {loss_type}")
+        
+    model0, model1 = build_models(config, device)
+    testing = config["testing"]
+   
 
     checkpoint_path = args.checkpoint or testing["checkpoint"]
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
