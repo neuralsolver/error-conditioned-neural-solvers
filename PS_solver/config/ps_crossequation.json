@@ -14,8 +14,10 @@
     "n_modes": [20, 20],
     "n_layers": 4
   },
-  "pde": {
+ "pde": {
+    "type": "PS",
     "k": 2
+   '
   },
   "testing": {
     "batch_size": 32,
