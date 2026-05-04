@@ -35,7 +35,7 @@
     "T": 20,
     "correction_step": 0.05,
     "checkpoint": "checkpoints/128_ps.pth",
-    "use_structured_noise": true,
+    "use_structured_noise": false,
     "noise_level": 30,
     "smooth_kernel": 9,
     "save_reconstruction_loss": "results/test_loss.npy",
