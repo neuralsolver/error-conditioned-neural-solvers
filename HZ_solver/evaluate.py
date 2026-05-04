@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from data_utils import get_device, load_config, load_test_loader, relative_l2_error, set_seed
 from models import FNO_CNN
-from pde_losses import PDELossHZ
+from pde_losses import PDELossHZ, PDELossPS
 
 
 def build_models(config, device):
@@ -47,14 +47,23 @@ def main():
     print(f"test_u shape: {tuple(test_u.shape)}, test_f shape: {tuple(test_f.shape)}")
 
     loss = nn.MSELoss()
-    pde_loss_grid = PDELossHZ()
-    model0, model1 = build_models(config, device)
 
-    testing = config["testing"]
     pde_config = config["pde"]
-    k = pde_config["k"]
-    lamb = pde_config.get("lamb", 0)
-
+    loss_type = pde_config.get("loss_type", "hz").lower()
+    
+    if loss_type in ["hz", "helmholtz"]:
+        pde_loss_grid = PDELossHZ()
+        k = pde_config["k"]
+        lamb = pde_config.get("lamb", 0)
+    elif loss_type in ["ps", "poisson"]:
+        pde_loss_grid = PDELossPS()
+        k = pde_config["k"]
+    else:
+        raise ValueError(f"Unknown pde type: {loss_type}")
+        
+    model0, model1 = build_models(config, device)
+    testing = config["testing"]
+    
     checkpoint_path = args.checkpoint or testing["checkpoint"]
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     model0.load_state_dict(checkpoint["model0_state_dict"])
@@ -69,7 +78,12 @@ def main():
         u_pred_test = model0(test_f)
 
         for j in range(testing["T"]):
-            l_pde_test = pde_loss_grid(u_pred_test, test_f, k, lamb)
+            
+            if loss_type in ["hz", "helmholtz"]:
+                l_pde_test = pde_loss_grid(u_pred_test, test_f, k, lamb)
+            else:
+                l_pde_test = pde_loss_grid(u_pred_test, test_f, k)
+                
             input_test = torch.cat([test_f, u_pred_test, l_pde_test], dim=1)
             u_correction_test = model1(input_test)
 
