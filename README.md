@@ -27,12 +27,51 @@ For linear Helmholtz equation, we use $k=1$, $\lambda=0$ with $128 \times 128$ r
 For nonlinear Helmholtz equation, we use $k=2$, $\lambda=1$ with $128 \times 128$ resoltion for training.
 
 ### Setup
+```bash
 pip install -r HZ_solver/requirements.txt
-
-### Evaluation
+```
 
 ### Training
+Train from scratch:
+
 ```bash
-cd Self-correction1-PDE/
-python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
+cd HZ_solver
+python -u train.py --config config/hz.json
 ```
+
+### Evaluation
+#### Indistribution:
+Use a Helmholtz test set with the same equation setting as training.
+
+```bash
+python -u evaluate.py --config config/hz.json
+```
+#### Extrapolation:
+Use a Helmholtz test set generated with a different wave number.
+
+Example for $k=3$:
+
+```bash
+python -u evaluate.py --config config/hz_extrapolation.json
+```
+
+#### Super-resolution:
+Use a higher-resolution Helmholtz test set.
+
+Example for $256 \times 256$:
+
+```bash
+python -u evaluate.py --config config/hz_superresolution.json
+```
+
+#### Cross-equation:
+Zero-shot test on Poisson equation:
+
+```bash
+python -u evaluate.py --config config/hz_crossequation.json
+```
+
+
+
+
+
