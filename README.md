@@ -20,49 +20,17 @@ conda activate helmholtz
 ```
 
 ## Helmoholtz Equation
-$$\nabla^2 u + k^2 u = f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \partial\Omega$$
+$$\nabla^2 u + k^2 u + \lambda u^3 = f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \partial\Omega$$
+For linear Helmholtz equation, we use $k=1$, $\lambda=0$ with $128 \times 128$ resolution for training.
+For nonlinear Helmholtz equation, we use $k=2$, $\lambda=1$ with $128 \times 128$ resoltion for training.
+
+### Setup
+pip install -r HZ_solver/requirements.txt
+
+### Evaluation
 
 ### Training
 ```bash
 cd Self-correction1-PDE/
 python -m helmholtz_solver.train --config helmholtz_solver/configs/helmholtz.yaml
-```
-### Evaluation
-### Without Extrapolation (k = 1, same as training)
-
-Set `inference.k` to match the training wavenumber, then run:
-
-```bash
-python -m helmholtz_solver.evaluate --config helmholtz_solver/configs/helmholtz.yaml
-```
-
-Edit `configs/helmholtz.yaml`:
-
-```yaml
-data:
-  test_path: helmholtz_solver/data/helmholtz_64_test_1.mat   # test set with k=1
-
-inference:
-  k: 1        # same wavenumber as training
-  T_test: 20
-  step_size: 0.1
-```
-
-### With Extrapolation (k = 4, unseen at training)
-Change `inference.k` and the test data path to the out-of-distribution set:
-
-```yaml
-data:
-  test_path: helmholtz_solver/data/helmholtz_64_test_4.mat   # test set with k=4
-
-inference:
-  k: 4        # larger wavenumber, not seen during training
-  T_test: 120  # need larger iterations
-  step_size: 0.07
-```
-
-Then run:
-
-```bash
-python -m helmholtz_solver.evaluate --config helmholtz_solver/configs/helmholtz.yaml
 ```
