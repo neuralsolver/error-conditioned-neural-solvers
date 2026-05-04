@@ -1,0 +1,42 @@
+{
+  "seed": 33,
+  "device": "auto",
+  "data": {
+    "training_path": "data/training",
+    "testing_path": "data/testing",
+    "train_file": null,
+    "test_file": null,
+    "f_key": "f_data",
+    "u_key": "psi_data"
+  },
+  "model": {
+    "hidden_channels": 64,
+    "n_modes": [20, 20],
+    "n_layers": 4
+  },
+  "pde": {
+    "k": 2,
+    "lamb": 1
+  },
+  "training": {
+    "batch_size": 64,
+    "n_epochs": 60,
+    "T": 5,
+    "correction_step": 0.03,
+    "pde_weight": 0.0001,
+    "learning_rate": 0.0000005,
+    "weight_decay": 0.0001,
+    "resume_checkpoint": null,
+    "save_checkpoint": "checkpoints/128_5_new.pth",
+    "save_loss": "results/train_loss.npy",
+    "print_every": 10
+  },
+  "testing": {
+    "batch_size": 32,
+    "T": 80,
+    "correction_step": 0.02,
+    "checkpoint": "checkpoints/128_5_new.pth",
+    "save_reconstruction_loss": "results/test_loss.npy",
+    "save_pde_loss": "results/test_pde.npy"
+  }
+}
