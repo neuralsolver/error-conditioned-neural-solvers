@@ -1,1 +1,31 @@
-
+{
+  "seed": 33,
+  "device": "auto",
+  "data": {
+    "training_path": "data/training",
+    "testing_path": "data/testing",
+    "train_file": null,
+    "test_file": null,
+    "f_key": "f_data",
+    "u_key": "phi_data"
+  },
+  "model": {
+    "hidden_channels": 64,
+    "n_modes": [20, 20],
+    "n_layers": 4
+  },
+  "pde": {
+    "k": 2
+  },
+  "testing": {
+    "batch_size": 32,
+    "T": 170,
+    "correction_step": 0.01,
+    "checkpoint": "checkpoints/ENS_PS.pth",
+    "use_structured_noise": false,
+    "noise_level": 30,
+    "smooth_kernel": 9,
+    "save_reconstruction_loss": "results/test_loss.npy",
+    "save_pde_loss": "results/test_pde.npy"
+  }
+}
