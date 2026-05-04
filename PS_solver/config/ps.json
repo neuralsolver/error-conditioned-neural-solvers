@@ -26,7 +26,7 @@
     "learning_rate": 0.0001,
     "weight_decay": 0.0001,
     "resume_checkpoint": null,
-    "save_checkpoint": "checkpoints/ENS_ps.pth",
+    "save_checkpoint": "checkpoints/ENS_PS.pth",
     "save_loss": "results/train_loss.npy",
     "print_every": 10
   },
@@ -34,7 +34,7 @@
     "batch_size": 32,
     "T": 20,
     "correction_step": 0.05,
-    "checkpoint": "checkpoints/128_ps.pth",
+    "checkpoint": "checkpoints/ENS_PS.pth",
     "use_structured_noise": false,
     "noise_level": 30,
     "smooth_kernel": 9,
