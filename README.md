@@ -126,9 +126,8 @@ $$
 \begin{aligned}
 \partial_\tau w(\mathbf{r}, \tau)
 + v(\mathbf{r}, \tau)\cdot\nabla w(\mathbf{r}, \tau)
-&= \nu\,\Delta w(\mathbf{r}, \tau) + f(\mathbf{r}),
-\quad \mathbf{r} \in \Omega,\ \tau \in (0, T], \\
-\nabla \cdot v(\mathbf{r}, \tau) &= 0.
+&= \nu \Delta w(\mathbf{r}, \tau) + f(\mathbf{r}), \\
+\nabla \cdot v(\mathbf{r}, \tau) &= 0,
 \end{aligned}
 $$
 
