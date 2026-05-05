@@ -122,12 +122,16 @@ python -u evaluate.py --config config/ps_crossequation.json
 ```
 
 ## Navier-Stokes equation
-$$\partial_\tau w(\mathbf{r}, \tau) + v(\mathbf{r}, \tau)\cdot\nabla
-    w(\mathbf{r}, \tau)
-    &= \nu\,\Delta w(\mathbf{r}, \tau) + f(\mathbf{r}),
-    \quad \mathbf{r} \in \Omega,\ \tau \in (0, T]$$ 
+$$
+\partial_\tau w(\mathbf{r}, \tau)
++ v(\mathbf{r}, \tau)\cdot\nabla w(\mathbf{r}, \tau)
+= \nu\,\Delta w(\mathbf{r}, \tau) + f(\mathbf{r}),
+\quad \mathbf{r} \in \Omega,\ \tau \in (0, T]
+$$
 
-$$\nabla \cdot v(\mathbf{r}, \tau) &= 0$$
+$$
+\nabla \cdot v(\mathbf{r}, \tau) = 0
+$$
 
 We use $\nu=1e-3$, $f(\mathbf{r}) = 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
 
