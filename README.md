@@ -130,7 +130,7 @@ $$
 \nabla \cdot v = 0
 $$
 
-We use $\nu=1e-3$, $f(\mathbf{r}) = 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
+We use $\nu=1e-3$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
 
 ### Setup
 ```bash
@@ -147,34 +147,34 @@ python -u train.py --config config/ns.json
 
 ### Evaluation
 #### Indistribution:
-Use a Poisson test set with the same equation setting as training.
+Use a Navier-stokes test set with the same equation setting as training.
 
 ```bash
-python -u evaluate.py --config config/ps.json
+python -u evaluate.py --config config/ns.json
 ```
-#### Extrapolation:
-Use a Poisson test set generated with a different scaling factor.
+#### Viscosity-shift:
+Use a Navier-stokes test set generated with a different viscosity.
 
-Example for $\alpha=1$:
+Example for $\nu = 1e-4$:
 
 ```bash
-python -u evaluate.py --config config/ps_extrapolation.json
+python -u evaluate.py --config config/ns_visc_shift.json
+```
+
+#### Forcing-shift:
+Use a Navier-stokes test set generated with a different forcing term.
+
+Example for $f= 0.1\bigl(\sin(4\pi(r_1+r_2)) + \cos(4\pi(r_1+r_2))\bigr)$:
+
+```bash
+python -u evaluate.py --config config/ns_f_shift.json
 ```
 
 #### Super-resolution:
-Use a higher-resolution Helmholtz test set.
-
-Example for $256 \times 256$:
+Use a higher-resolution Navier-stokes test set.
 
 ```bash
-python -u evaluate.py --config config/ps_superresolution.json
-```
-
-#### Cross-equation:
-Zero-shot test on Helmholtz equation:
-
-```bash
-python -u evaluate.py --config config/ps_crossequation.json
+python -u evaluate.py --config config/ns_superresolution.json
 ```
 
 
