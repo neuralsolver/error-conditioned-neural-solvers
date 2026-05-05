@@ -45,7 +45,7 @@
   "testing": {
     "batch_size": 32,
     "T": 80,
-    "correction_step": 0.01,
+    "correction_step": 0.1,
     "checkpoint": "checkpoints/ENS_NS.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
     "save_pde_loss": "results/test_pde.npy"
