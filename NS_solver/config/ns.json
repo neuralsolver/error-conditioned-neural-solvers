@@ -30,13 +30,13 @@
   },
   "training": {
     "batch_size": 48,
-    "n_epochs": 20000,
+    "n_epochs": 10000,
     "T": 5,
     "correction_step": 0.1,
     "learning_rate": 0.0001,
     "weight_decay": 0.0001,
     "resume_checkpoint": null,
-    "save_checkpoint": "checkpoints/128_ns.pth",
+    "save_checkpoint": "checkpoints/ENS_NS.pth",
     "save_loss": "results/train_loss.npy",
     "print_every": 10,
     "num_workers": 4,
@@ -46,7 +46,7 @@
     "batch_size": 32,
     "T": 80,
     "correction_step": 0.01,
-    "checkpoint": "checkpoints/128_ns.pth",
+    "checkpoint": "checkpoints/ENS_NS.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
     "save_pde_loss": "results/test_pde.npy"
   }
