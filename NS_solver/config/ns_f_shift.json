@@ -26,7 +26,7 @@
   "pde": {
     "nu": 0.001,
     "dt": 0.2,
-    "forcing": "default"
+    "forcing": "forcing_shift"
   },
   "training": {
     "batch_size": 48,
