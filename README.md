@@ -173,6 +173,8 @@ python -u evaluate.py --config config/ns_f_shift.json
 #### Super-resolution:
 Use a higher-resolution Navier-stokes test set.
 
+Example for $256 \times 256$:
+
 ```bash
 python -u evaluate.py --config config/ns_superresolution.json
 ```
