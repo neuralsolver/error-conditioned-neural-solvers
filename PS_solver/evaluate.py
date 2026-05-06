@@ -11,7 +11,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from data_utils import get_device, load_config, load_test_loader, relative_l2_error, set_seed
 from models import FNO_CNN
-from pde_losses import PDELossPS
+from pde_losses import PDELossPS, PDELossHZ
 
 
 def build_models(config, device):
@@ -114,14 +114,21 @@ def main():
         u_pred_test = model0(test_f_noise)
 
         for j in range(testing["T"]):
-            l_pde_test = pde_loss_grid(u_pred_test, test_f_noise, k)
+            if loss_type in ["hz", "helmholtz"]:
+                l_pde_test = pde_loss_grid(u_pred_test, test_f, k, lamb)
+            elif loss_type in ["ps", "poisson"]:
+                l_pde_test = pde_loss_grid(u_pred_test, test_f, k)
+                
             input_test = torch.cat([test_f_noise, u_pred_test, l_pde_test], dim=1)
             u_correction_test = model1(input_test)
 
             u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
 
             test_loss = loss(u_pred_test, test_u)
-            pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f_noise, k)**2)
+            if loss_type in ["hz", "helmholtz"]:
+                pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, k, lamb)**2)
+            elif loss_type in ["ps", "poisson"]:
+                pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, k)**2)
             test.append(test_loss.item())
             pde.append(pde_loss.item())
 
