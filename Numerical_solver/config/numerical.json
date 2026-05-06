@@ -1,0 +1,58 @@
+{
+  "seed": 33,
+  "device": "auto",
+  "data": {
+    "testing_path": "data/testing",
+    "test_file": null,
+    "f_key": "f_data",
+    "u_key": "psi_data",
+    "sample_start": 0,
+    "sample_end": 1
+  },
+  "pde": {
+    "k": 2.0,
+    "lamb": 1.0
+  },
+  "model": {
+    "model0": {
+      "in_channels": 1,
+      "out_channels": 1,
+      "hidden_channels": 64,
+      "n_modes": [20, 20],
+      "n_layers": 4
+    },
+    "model1": {
+      "in_channels": 3,
+      "out_channels": 1,
+      "hidden_channels": 64,
+      "n_modes": [20, 20],
+      "n_layers": 4
+    },
+    "checkpoint": "checkpoints/hz_model0_model1.pth"
+  },
+  "experiment": {
+    "methods": ["GradientDescent", "GaussNewton", "Newton", "Ours"],
+    "initializations": ["zero", "gaussian", "model0_noise"],
+    "save_dir": "results",
+    "save_prefix": "numerical"
+  },
+  "initialization": {
+    "gaussian_scale": 6.0,
+    "gaussian_smooth_size": 9,
+    "model0_alpha": 1.0,
+    "model0_noise_beta": 2.0,
+    "model0_noise_kernel": 9,
+    "model0_noise_mask_radius": 0.6,
+    "model0_noise_seed": 0
+  },
+  "numerical": {
+    "S": 128,
+    "max_iter": 50,
+    "tol": 0.00001,
+    "lr": 0.000001
+  },
+  "ours": {
+    "T": 15,
+    "correction_step": 0.01
+  }
+}
