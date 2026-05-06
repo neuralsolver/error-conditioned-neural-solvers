@@ -1,0 +1,27 @@
+{
+  "seed": 33,
+  "device": "auto",
+  "data": {
+    "training_path": "data/training",
+    "testing_path": "data/testing",
+    "train_file": null,
+    "test_file": null,
+    "a_key": "a",
+    "f_key": "f",
+    "u_key": "pp",
+    "aBC_key": "aBc"
+  },
+  "model": {
+    "hidden_channels": 64,
+    "n_modes": [20, 20],
+    "n_layers": 4
+  },
+  "testing": {
+    "batch_size": 32,
+    "T": 120,
+    "correction_step": 0.005,
+    "checkpoint": "checkpoints/ENS_Darcy.pth",
+    "save_reconstruction_loss": "results/test_loss.npy",
+    "save_pde_loss": "results/test_pde.npy"
+  }
+}
