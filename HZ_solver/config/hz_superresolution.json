@@ -15,7 +15,7 @@
     "n_layers": 4
   },
   "pde": {
-    "k": 3,
+    "k": 1,
     "lamb": 0
   },
   "testing": {
