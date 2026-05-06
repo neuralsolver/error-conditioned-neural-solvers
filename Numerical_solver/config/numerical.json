@@ -7,7 +7,7 @@
     "f_key": "f_data",
     "u_key": "psi_data",
     "sample_start": 0,
-    "sample_end": 1
+    "sample_end": 6
   },
   "pde": {
     "k": 2.0,
@@ -39,7 +39,7 @@
   "initialization": {
     "gaussian_scale": 6.0,
     "gaussian_smooth_size": 9,
-    "model0_alpha": 2.0,
+    "model0_alpha": 4.0,
     "model0_noise_beta": 3.0,
     "model0_noise_kernel": 9,
     "model0_noise_mask_radius": 0.6,
