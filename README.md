@@ -181,12 +181,27 @@ python -u evaluate.py --config config/ns_superresolution.json
 ## Darcy flow:
 $$\nabla \cdot (a \nabla u) = f, \quad u = 0 \text{ on } \partial\Omega$$
 
+We use $128 \times 128$ resolution and concatenate $a$ and $f$ channel-wise for training. 
 ### Training
 Train from scratch:
 
 ```bash
 cd Darcy_solver
 python -u train.py --config config/darcy.json
+```
+#### Evaluation
+#### Indistribution:
+Use a Darcy-flow test set with the same equation setting as training.
+
+```bash
+python -u evaluate.py --config config/darcy.json
+```
+
+#### Indistribution:
+Use a higher-resolution Darcy-flow test set.
+
+```bash
+python -u evaluate.py --config config/darcy_superresolution.json
 ```
 
 ## Test for numerical optimiztaion (Newton/Gauss-Newton/Gradient-Descent)
