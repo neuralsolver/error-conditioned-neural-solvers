@@ -90,7 +90,10 @@ def main():
             u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
 
             test_loss = loss(u_pred_test, test_u)
-            pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, k, lamb)**2)
+            if loss_type in ["hz", "helmholtz"]:
+                pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, k, lamb)**2)
+            else:
+                pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, k)**2)
             test.append(test_loss.item())
             pde.append(pde_loss.item())
 
