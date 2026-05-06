@@ -39,8 +39,8 @@
   "initialization": {
     "gaussian_scale": 6.0,
     "gaussian_smooth_size": 9,
-    "model0_alpha": 1.0,
-    "model0_noise_beta": 2.0,
+    "model0_alpha": 2.0,
+    "model0_noise_beta": 3.0,
     "model0_noise_kernel": 9,
     "model0_noise_mask_radius": 0.6,
     "model0_noise_seed": 0
