@@ -31,8 +31,8 @@
     "checkpoint": "checkpoints/hz_nonlinear.pth"
   },
   "experiment": {
-    "methods": ["GradientDescent", "GaussNewton", "Newton", "Ours"],
-    "initializations": ["zero", "gaussian", "model0_noise"],
+    "methods": ["Newton"],
+    "initializations": ["model0_noise"],
     "save_dir": "results",
     "save_prefix": "numerical"
   },
