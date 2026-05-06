@@ -123,9 +123,14 @@ def save_result(save_dir, prefix, method, init_type, pred, pde, recon, rel_l2, t
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="config/numerical.json")
+    parser.add_argument("--checkpoint", default=None)
     args = parser.parse_args()
 
     config = load_config(args.config)
+
+    if args.checkpoint is not None:
+        config["model"]["checkpoint"] = args.checkpoint
+    
     set_seed(config.get("seed", 33))
     device = get_device(config.get("device", "auto"))
 
