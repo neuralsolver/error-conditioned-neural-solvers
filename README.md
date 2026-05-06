@@ -197,7 +197,7 @@ Use a Darcy-flow test set with the same equation setting as training.
 python -u evaluate.py --config config/darcy.json
 ```
 
-#### Indistribution:
+#### Super-resolution:
 Use a higher-resolution Darcy-flow test set.
 
 ```bash
