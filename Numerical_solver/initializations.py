@@ -46,7 +46,7 @@ def build_initialization(init_type, f_tensor, model0, init_config, S):
     if init_type in ["zero", "0"]:
         return np.zeros((f_tensor.shape[0], S, S), dtype=np.float32)
 
-    if init_type in ["gaussian", "gauss_noise", "noise"]:
+    if init_type in ["noise"]:
         return np.stack([
             generate_smooth_boundary_noise(
                 S,
@@ -56,13 +56,13 @@ def build_initialization(init_type, f_tensor, model0, init_config, S):
             for _ in range(f_tensor.shape[0])
         ], axis=0)
 
-    if init_type in ["model0", "fno"]:
+    if init_type in ["model0"]:
         if model0 is None:
             raise ValueError("model0 initialization requires model checkpoint.")
         with torch.no_grad():
             return model0(f_tensor).squeeze(1).detach().cpu().numpy()
 
-    if init_type in ["model0_noise", "model0_then_noise", "fno_noise"]:
+    if init_type in ["model0_noise"]:
         if model0 is None:
             raise ValueError("model0_noise initialization requires model checkpoint.")
         with torch.no_grad():
