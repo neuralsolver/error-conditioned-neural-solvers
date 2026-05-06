@@ -28,7 +28,7 @@
       "n_modes": [20, 20],
       "n_layers": 4
     },
-    "checkpoint": "checkpoints/hz_model0_model1.pth"
+    "checkpoint": "checkpoints/hz_nonlinear.pth"
   },
   "experiment": {
     "methods": ["GradientDescent", "GaussNewton", "Newton", "Ours"],
