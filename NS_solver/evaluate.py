@@ -71,15 +71,13 @@ def main():
             u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
 
             test_loss = loss(u_pred_test, test_u_out)
-            pde_loss = torch.mean(R_test**2)
+            pde_loss = torch.mean(pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))**2)
             test.append(test_loss.item())
             pde.append(pde_loss.item())
 
             print(f"T_test {j + 1}: reconstruction loss {test_loss.item():.6e}, pde loss {pde_loss.item():.6e}")
 
-        R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
         rel_l2 = relative_l2_error(u_pred_test, test_u_out)
-        print(f"Final PDE loss: {torch.mean(R_test**2).item():.6e}")
         print(f"Relative L2 error: {rel_l2.item():.2e}")
 
     save_reconstruction_loss = testing.get("save_reconstruction_loss")
