@@ -31,7 +31,7 @@
   },
   "testing": {
     "batch_size": 32,
-    "T": 20,
+    "T": 40,
     "correction_step": 0.02,
     "checkpoint": "checkpoints/ENS_Darcy.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
