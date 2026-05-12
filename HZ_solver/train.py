@@ -70,7 +70,6 @@ def main():
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
     Loss = []
-    Test_Loss = []
     n_epochs = training["n_epochs"]
     T = training["T"]
 
