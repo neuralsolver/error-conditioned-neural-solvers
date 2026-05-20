@@ -41,33 +41,32 @@ class PDELossPS(nn.Module):
         return residual
 
 
-class PDELossDarcy(nn.Module):
-    """Darcy flow residual: -div(a * grad(u)) = f."""
+def PDELossDarcy(u, a, f=None):
+    if f is None:
+        f = 100 * torch.ones_like(u)
+    elif not torch.is_tensor(f):
+        f = torch.tensor(f, dtype=u.dtype, device=u.device)
+        if f.ndim == 2:
+            f = f[None, None, :, :]
+    else:
+        f = f.to(dtype=u.dtype, device=u.device)
 
-    def __init__(self):
-        super().__init__()
+    h = 1.0 / (u.shape[-1] - 1)
 
-    def forward(self, u, f, a):
-        n = u.shape[3]
-        h = 1 / (n - 1)
+    uc = u[:, :, 1:-1, 1:-1]
 
-        u_x = (u[:, :, :, 2:] - u[:, :, :, :-2]) / (2 * h)
-        u_y = (u[:, :, 2:, :] - u[:, :, :-2, :]) / (2 * h)
-        u_x = nn.functional.pad(u_x, (1, 1, 0, 0), mode='reflect')
-        u_y = nn.functional.pad(u_y, (0, 0, 1, 1), mode='reflect')
+    ae = 0.5 * (a[:, :, 1:-1, 1:-1] + a[:, :, 1:-1, 2:])
+    aw = 0.5 * (a[:, :, 1:-1, 1:-1] + a[:, :, 1:-1, :-2])
+    an = 0.5 * (a[:, :, 1:-1, 1:-1] + a[:, :, :-2, 1:-1])
+    ass = 0.5 * (a[:, :, 1:-1, 1:-1] + a[:, :, 2:, 1:-1])
 
-        u_xx = (u[:, :, :, 2:] - 2 * u[:, :, :, 1:-1] + u[:, :, :, :-2]) / (h ** 2)
-        u_yy = (u[:, :, 2:, :] - 2 * u[:, :, 1:-1, :] + u[:, :, :-2, :]) / (h ** 2)
-        u_xx = nn.functional.pad(u_xx, (1, 1, 0, 0), mode='reflect')
-        u_yy = nn.functional.pad(u_yy, (0, 0, 1, 1), mode='reflect')
+    div = (ae * (u[:, :, 1:-1, 2:] - uc) - aw * (uc - u[:, :, 1:-1, :-2]) + ass * (u[:, :, 2:, 1:-1] - uc) - an * (uc - u[:, :, :-2, 1:-1])) / h**2
 
-        a_x = (a[:, :, :, 2:] - a[:, :, :, :-2]) / (2 * h)
-        a_y = (a[:, :, 2:, :] - a[:, :, :-2, :]) / (2 * h)
-        a_x = nn.functional.pad(a_x, (1, 1, 0, 0), mode='reflect')
-        a_y = nn.functional.pad(a_y, (0, 0, 1, 1), mode='reflect')
+    residual_inner = -div - f[:, :, 1:-1, 1:-1]
 
-        residual = a * (u_xx + u_yy) + (a_x * u_x) + (a_y * u_y) + f
-        return residual
+    residual = torch.zeros_like(u)
+    residual[:, :, 1:-1, 1:-1] = residual_inner
+    return residual
 
 
 class PDELossBurgerSpec(nn.Module):
