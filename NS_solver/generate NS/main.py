@@ -67,7 +67,7 @@ for i in range(1):
     #f = -4.0 * torch.cos(2 * math.pi * 4 * Y) #KF
 
     #Number of snapshots from solution
-    record_steps = 40
+    record_steps = 20
     #Inputs
     a = torch.zeros(N, s, s)
     #Solutions
@@ -86,11 +86,11 @@ for i in range(1):
         w0 = 2 * GRF.sample(bsize)
         #w0 = GRF.sample(bsize)
         
-        sol_warm, _ = navier_stokes_2d(w0, f, 1e-3, 3.0, 1e-4, 10)
+        sol_warm, _ = navier_stokes_2d(w0, f, 1e-3, 2.0, 1e-4, 10)
         w_start = sol_warm[..., -1]
         
         #Solve NS
-        sol, sol_t = navier_stokes_2d(w_start, f, 1e-3, 2.0, 1e-4, record_steps, t0 = 2.0)
+        sol, sol_t = navier_stokes_2d(w_start, f, 1e-3, 4.0, 1e-4, record_steps, t0 = 2.0)
         
         a[c:(c+bsize),...] = w_start 
         u[c:(c+bsize),...] = sol
