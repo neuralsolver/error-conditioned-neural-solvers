@@ -3,7 +3,7 @@
   "device": "auto",
   "data": {
     "training_path": "data/training",
-    "testing_path": "data/testing",
+    "testing_path": "data/helmholtz_128_test.mat",
     "train_file": null,
     "test_file": null,
     "f_key": "f_data",
