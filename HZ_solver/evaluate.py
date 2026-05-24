@@ -39,7 +39,7 @@ def main():
     args = parser.parse_args()
 
     config = load_config(args.config)
-    set_seed(config.get("seed", 33))
+    set_seed(config.get("seed"))
     device = get_device(config.get("device", "auto"))
 
     test_u, test_f, test_dataset, test_loader, test_path = load_test_loader(config, device)
