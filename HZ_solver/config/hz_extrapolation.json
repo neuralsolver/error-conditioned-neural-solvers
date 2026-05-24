@@ -5,7 +5,7 @@
     "training_path": "data/training",
     "testing_path": "data/testing",
     "train_file": null,
-    "test_file": null,
+    "test_file": "helmholtz_128_test_k3.mat",
     "f_key": "f_data",
     "u_key": "psi_data"
   },
