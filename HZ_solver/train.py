@@ -38,7 +38,7 @@ def main():
     args = parser.parse_args()
 
     config = load_config(args.config)
-    set_seed(config.get("seed", 33))
+    set_seed(config.get("seed"))
     device = get_device(config.get("device", "auto"))
 
     train_u, train_f, train_dataset, train_loader, train_path = load_train_loader(config, device)
