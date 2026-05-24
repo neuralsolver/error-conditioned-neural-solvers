@@ -13,7 +13,7 @@ class PDELossHZ(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def forward(u, f, k, lamb):
+    def forward(self, u, f, k, lamb):
         n = u.shape[3]
         h = 1/(n-1)
         
