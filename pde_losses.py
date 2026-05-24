@@ -13,15 +13,14 @@ class PDELossHZ(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def forward(self, u, f, k):
+    def forward(u, f, k, lamb):
         n = u.shape[3]
-        h = 1 / (n - 1)
+        h = 1/(n-1)
+        
         residual = torch.zeros_like(u)
-        u_xx = (u[:, :, 1:-1, 2:] - 2 * u[:, :, 1:-1, 1:-1] + u[:, :, 1:-1, :-2]) / (h * h)
-        u_yy = (u[:, :, 2:, 1:-1] - 2 * u[:, :, 1:-1, 1:-1] + u[:, :, :-2, 1:-1]) / (h * h)
-        residual[:, :, 1:-1, 1:-1] = (
-            u_xx + u_yy + (k ** 2) * u[:, :, 1:-1, 1:-1] - f[:, :, 1:-1, 1:-1]
-        )
+        u_xx = (u[:, :, 1:-1, 2:] - 2*u[:, :, 1:-1, 1:-1] + u[:, :, 1:-1, :-2]) / (h*h)
+        u_yy = (u[:, :, 2:, 1:-1] - 2*u[:, :, 1:-1, 1:-1] + u[:, :, :-2, 1:-1]) / (h*h)
+        residual[:, :, 1:-1, 1:-1] = u_xx + u_yy + (k**2) * u[:, :, 1:-1, 1:-1] +  lamb * (u[:, :, 1:-1, 1:-1] ** 3) - f[:, :, 1:-1, 1:-1]
         return residual
 
 
