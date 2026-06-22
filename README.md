@@ -203,7 +203,7 @@ python -u evaluate.py --config config/ns_superresolution.json
 ## Darcy flow:
 $$\nabla \cdot (a \nabla u) = f, \quad u = 0 \text{ on } \partial\Omega$$
 
-We use $128 \times 128$ resolution and concatenate $a$ and $f$ channel-wise for training. 
+We use $128 \times 128$ resolution and $f=100$ for training. 
 ### Training
 Train from scratch:
 
