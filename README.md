@@ -24,7 +24,6 @@ HZ_solver/
 ## Complete Dataset
 
 We provide a larger collection of datasets than those used in the paper. The table below summarizes the evaluation regimes reported in our experiments.
-We provide a substantially larger collection of datasets than those used in the paper. The table below summarizes the benchmark settings and evaluation regimes reported in our experiments.
 ![Benchmark Settings](figures/benchmark_settings.png)
 ## All Pretrained models
 ## Installation
