@@ -28,75 +28,58 @@ def main():
 
     loss = nn.MSELoss()
     pde_loss_grid = PDELossNS2d()
+    model0 = build_model(cfg["model0"], device)
+    model1 = build_model(cfg["model1"], device)
 
-    data_cfg = cfg["data"]
-    train_cfg = cfg["train"]
-    model_cfg = cfg["model"]
-
-    model0 = build_model(cfg["model"].get("model0_in_channels", 1), model_cfg.get("model0_out_channels", train_u_out.shape[1]), model_cfg,).to(device)
-    model1 = build_model(
-        model_cfg.get("model1_in_channels", 43),
-        model_cfg.get("model1_out_channels", train_u_out.shape[1]),
-        model_cfg,
-    ).to(device)
-
-    f = make_forcing(
-        data_cfg.get("resolution", train_u_in.shape[-1]),
-        device=device,
-        forcing_cfg=data_cfg.get("forcing"),
-    )
-    pde_loss = build_pde_loss(f=f, nu=train_cfg.get("nu", 1e-4), dt=data_cfg.get("dt", 0.2))
+    training = config["training"]
+    pde_config = config["pde"]
+    f = make_forcing(train_u_out.shape[-1], device, pde_config.get("forcing", "default"))
+    
+    resume_checkpoint = training.get("resume_checkpoint")
+    resume_checkpoint = None if resume_checkpoint in [None, "", "none", "None"] else resume_checkpoint
+    if resume_checkpoint:
+        checkpoint = torch.load(resume_checkpoint, map_location=device, weights_only=False)
+        model0.load_state_dict(checkpoint["model0_state_dict"])
+        model1.load_state_dict(checkpoint["model1_state_dict"])
+        print(f"Loaded checkpoint from {resume_checkpoint}")
+    else:
+        print("Training from scratch")
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
-        lr=train_cfg.get("lr", 1e-4),
-        weight_decay=train_cfg.get("weight_decay", 1e-4),
+        lr=training["learning_rate"],
+        weight_decay=training["weight_decay"],
     )
-    loss = nn.MSELoss()
-    start_epoch = 0
 
-    resume_path = train_cfg.get("resume_path")
-    if resume_path:
-        checkpoint = torch.load(resume_path, map_location=device, weights_only=False)
-        model0.load_state_dict(checkpoint["model0_state_dict"])
-        model1.load_state_dict(checkpoint["model1_state_dict"])
-        if "optimizer_state_dict" in checkpoint:
-            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-        start_epoch = int(checkpoint.get("epoch", -1)) + 1
-        print(f"Resumed from {resume_path} at epoch {start_epoch}")
-
-    n_epochs = train_cfg.get("n_epochs", 200)
-    T = train_cfg.get("rollout_steps", 5)
-    step_size = train_cfg.get("step_size", 0.1)
-    nu = train_cfg.get("nu", 1e-4)
-    dt = data_cfg.get("dt", 0.2)
-    print_every = train_cfg.get("print_every", 10)
+    if resume_checkpoint and "optimizer_state_dict" in checkpoint:
+        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        
     Loss = []
-
-    for i in range(start_epoch, n_epochs):
+    Test_Loss = []
+    n_epochs = training["n_epochs"]
+    T = training["T"]
+    
+    for i in range(n_epochs):
         model0.train()
         model1.train()
         epoch_loss = 0.0
 
-        pbar = tqdm(train_loader, desc=f"epoch {i}", leave=False)
-        for u_out_batch, u_in_batch in pbar:
+        for u_out_batch, u_in_batch in train_loader:
             u_out_batch = u_out_batch.to(device)
             u_in_batch = u_in_batch.to(device)
-            B = u_out_batch.shape[0]
-
             optimizer.zero_grad()
-
+            
             u_pred = model0(u_in_batch, sigma_model0(B, device))
             data_loss = 0.0
 
             for j in range(T):
                 with torch.no_grad():
-                    R = residual_map_vorticity2d(pde_loss, u_pred, f, nu, dt)
+                    R = pde_loss_grid(u_pred, f, pde_config["nu"], pde_config.get("dt", 0.2))
                     input_data = torch.cat([u_in_batch, u_pred, R], dim=1)
 
                 u_correction = model1(input_data, sigma_model1(j, T, B, device))
-                u_next = u_pred + step_size * u_correction
-                data_loss = data_loss + loss(u_next, u_out_batch)
+                u_next = u_pred + training["correction_step"] * u_correction
+                data_loss += loss(u_pred, u_out_batch)
                 u_pred = u_next.detach()
 
             data_loss = data_loss / T
@@ -104,24 +87,30 @@ def main():
             optimizer.step()
 
             epoch_loss += data_loss.item()
-            pbar.set_postfix(loss=f"{data_loss.item():.6f}")
 
         Loss.append(epoch_loss)
-        if i % print_every == 0:
+        
+        if i % training["print_every"] == 0:
             print(f"Epoch {i}: train loss {epoch_loss:.6f}")
 
-    checkpoint_path = Path(train_cfg.get("checkpoint_path", "checkpoints/ns_kf_video_pde.pth"))
-    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+    save_checkpoint = Path(training["save_checkpoint"])
+    save_checkpoint.parent.mkdir(parents=True, exist_ok=True)
     checkpoint = {
-        "epoch": n_epochs - 1,
+        "epoch": i,
         "model0_state_dict": model0.state_dict(),
         "model1_state_dict": model1.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
-        "Loss": Loss,
-        "config": cfg,
+        "config": config,
     }
-    torch.save(checkpoint, checkpoint_path)
-    print(f"Saved checkpoint: {checkpoint_path}")
+    torch.save(checkpoint, save_checkpoint)
+    print(f"Saved checkpoint to {save_checkpoint}")
+
+    save_loss = training.get("save_loss")
+    if save_loss:
+        save_loss = Path(save_loss)
+        save_loss.parent.mkdir(parents=True, exist_ok=True)
+        np.save(save_loss, np.array(Loss))
+        print(f"Saved training loss to {save_loss}")
 
 
 if __name__ == "__main__":
