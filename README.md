@@ -1,6 +1,26 @@
 # Feed-Forward ENS
 ![Teaser](figures/pipeline.png)
 [🌐 Project Page](https://neuralsolver.github.io/) 
+## Soler Structure
+All PDE solvers follow the same directory structure. Below we show
+`HZ_solver/` as an example.
+
+```text
+HZ_solver/
+├── config/
+│   └── hz.json                          # in-distribution configuration
+│   └── hz_crossequation.json            # cross-equation configuration
+│   └── hz_extrapolation.json            # coefficient-shift configuration
+│   └── hz_superresolution.json          # resolution-shift configuration
+├── data/
+│   ├── training/          # place training data here
+│   └── testing/           # place testing data here
+├── models.py
+├── train.py               # training script
+├── evaluate.py            # evaluation script
+├── requirements.txt
+└── data_utils.py
+```
 ## Complete Dataset
 ## All Pretrained models
 ## Installation
