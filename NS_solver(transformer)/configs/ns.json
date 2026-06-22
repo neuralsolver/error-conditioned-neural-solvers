@@ -58,7 +58,7 @@
   },
   "testing": {
     "batch_size": 1,
-    "T": 12,
+    "T": 5,
     "correction_step": 0.1,
     "checkpoint": "checkpoints/ENS_NS.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
