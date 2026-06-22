@@ -101,7 +101,26 @@ def load_test_loader(config):
     )
     return test_u_out, test_u_in, test_dataset, test_loader, test_path
 
+def sigma_model0(batch_size: int, device: torch.device) -> torch.Tensor:
+    return torch.ones(batch_size, device=device)
 
+def sigma_model1(j: int, T: int, batch_size: int, device: torch.device) -> torch.Tensor:
+    val = (j + 1) / T
+    return torch.full((batch_size,), val, device=device)
+
+def make_forcing(n, device, forcing="default"):
+    a = torch.linspace(0, 1, n + 1, device=device)
+    a = a[0:-1]
+    X, Y = torch.meshgrid(a, a, indexing="ij")
+
+    if forcing == "default":
+        return 0.1 * (torch.sin(2 * math.pi * (X + Y)) + torch.cos(2 * math.pi * (X + Y)))
+    if forcing == "KF":
+        return -4.0 * torch.cos(2 * math.pi * 4 * Y)
+    if forcing == "forcing_shift":
+        return 0.1 * (torch.sin(4 * math.pi * (X + Y)) + torch.cos(4 * math.pi * (X + Y)))
+    raise ValueError(f"Unknown forcing: {forcing}")
+    
 def relative_l2_error(u_pred, u_true):
     return torch.mean(
         torch.linalg.vector_norm(u_pred - u_true, dim=(1,2,3)) /
