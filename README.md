@@ -23,7 +23,7 @@ HZ_solver/
 ```
 ## Complete Dataset
 
-We provide a larger collection of datasets than those used in the paper, which can be downloaded [here](https://drive.google.com/drive/folders/1l_yLE9Yr0yJTdXs1wzrIpsdX7MW-HYkU?usp=sharing). The table below summarizes the evaluation regimes reported in our experiments.
+We provide a larger collection of datasets than those used in the paper, which can be downloaded [here](https://drive.google.com/drive/folders/1l_yLE9Yr0yJTdXs1wzrIpsdX7MW-HYkU?usp=sharing). The table below summarizes the evaluation regimes reported in our experiments. 
 <p align="center">
   <img src="figures/benchmark_settings.png" width="60%">
 </p>
