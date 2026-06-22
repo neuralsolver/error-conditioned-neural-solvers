@@ -51,7 +51,7 @@ def main():
         test_u_in = test_u_in.to(device)
         B = test_u_in_batch.shape[0]
 
-        u_pred_test = model0(test_u_in_batch, sigma_model0(B, device))
+        u_pred_test = model0(test_u_in, sigma_model0(B, device))
         
         for j in range(T):
             R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
