@@ -50,16 +50,14 @@ def main():
     model0, model1 = build_models(config, device)
 
     training = config["training"]
+    pde_config = config["pde"]
+    f = pde_config["f"]
     
     resume_checkpoint = training.get("resume_checkpoint")
-    resume_checkpoint = None if resume_checkpoint in [None, "", "none", "None"] else resume_checkpoint
     if resume_checkpoint:
         checkpoint = torch.load(resume_checkpoint, map_location=device, weights_only=False)
         model0.load_state_dict(checkpoint["model0_state_dict"])
         model1.load_state_dict(checkpoint["model1_state_dict"])
-        print(f"Loaded checkpoint from {resume_checkpoint}")
-    else:
-        print("Training from scratch")
 
     optimizer = torch.optim.AdamW(
         list(model0.parameters()) + list(model1.parameters()),
@@ -81,27 +79,27 @@ def main():
 
         epoch_loss = 0.0
 
-        for u_batch, f_batch, a_batch, aBC_batch in train_loader:
+        for u_batch, a_batch in train_loader:
             u_batch = u_batch.to(device)
-            f_batch = f_batch.to(device)
             a_batch = a_batch.to(device)
 
             optimizer.zero_grad()
 
-            u_pred = model0(torch.cat([f_batch, a_batch], dim=1))
+            u_pred = model0(a_batch)
             data_loss = 0.0
 
             for j in range(T):
                 with torch.no_grad():
-                    l_pde = pde_loss_grid(u_pred, f_batch, a_batch)
-                    input_data = torch.cat([f_batch, a_batch, u_pred, l_pde], dim=1)
+                    l_pde = pde_loss_grid(u_pred, a_batch, f)
+                    input_data = torch.cat([a_batch, u_pred, l_pde], dim=1)
 
                 u_correction = model1(input_data)
                 u_pred = u_pred + training["correction_step"] * u_correction
 
-                data_loss += loss(u_pred, u_batch)
-                if training.get("pde_weight", 0.0) > 0:
-                    data_loss += training["pde_weight"] * torch.mean(pde_loss_grid(u_pred, f_batch, a_batch)**2)
+                data_loss += (
+                    loss(u_pred, u_batch)
+                    + training["pde_weight"] * torch.mean(pde_loss_grid(u_pred, f_batch, k, lamb)**2)
+                )
 
             data_loss = data_loss / T
             data_loss.backward()
