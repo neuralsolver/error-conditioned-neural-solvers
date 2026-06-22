@@ -1,0 +1,51 @@
+seed: 33
+device: auto
+
+data:
+  train_path: data/NS_128(1e-4)_train.h5
+  test_path: data/NS_128(1e-5)_test.h5
+  input_key: a
+  output_key: u
+  resolution: 128
+  dt: 0.2
+  forcing:
+    kind: sin_cos_xy
+    amplitude: 0.1
+
+model:
+  model0_in_channels: 1
+  model0_out_channels: 21
+  model1_in_channels: 43
+  model1_out_channels: 21
+  depths: [2, 11]
+  widths: [384, 768]
+  d_ff_multiplier: 3
+  d_head: 64
+  neighborhood_kernel_size: 7
+  mapping_depth: 1
+  mapping_width: 768
+  mapping_d_ff_multiplier: 3
+  patch_size: [8, 8]
+  dropout: 0.0
+
+train:
+  batch_size: 30
+  n_epochs: 200
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  rollout_steps: 5
+  step_size: 0.1
+  nu: 1.0e-4
+  num_workers: 0
+  print_every: 10
+  checkpoint_path: checkpoints/ns_kf_video_pde.pth
+  resume_path:
+
+evaluate:
+  checkpoint_path: checkpoints/ns_kf_video_pde.pth
+  batch_size: 1
+  rollout_steps: 12
+  sigma_T: 5
+  step_size: 0.1
+  nu: 1.0e-4
+  save_path: results/ns_kf_eval.pt

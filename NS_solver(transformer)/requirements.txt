@@ -1,0 +1,17 @@
+torch>=2.2
+torchvision>=0.17
+numpy
+h5py
+scipy
+PyYAML
+tqdm
+einops
+dctorch
+jsonmerge
+torchdiffeq
+torchsde
+clean-fid
+clip-anytorch
+# Optional but recommended for NeighborhoodAttentionSpec acceleration.
+# Install the wheel matching your CUDA/PyTorch build from https://github.com/SHI-Labs/NATTEN
+# natten
