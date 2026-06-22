@@ -1,4 +1,4 @@
-# Feed-Forward ENS
+# Error-Conditioned Neural Solvers
 ![Teaser](figures/pipeline.png)
 [🌐 Project Page](https://neuralsolver.github.io/) 
 ## Solver Structure
