@@ -31,6 +31,7 @@ def main():
     model0 = build_model(config["model0"], device)
     model1 = build_model(config["model1"], device)
 
+    training = config["training"]
     testing = config["testing"]
     pde_config = config["pde"]
     f = make_forcing(test_u_out.shape[-1], device, pde_config.get("forcing", "default"))
@@ -56,7 +57,7 @@ def main():
         for j in range(testing["T"]):
             R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
             input_test = torch.cat([test_u_in, u_pred_test, R_test], dim=1)
-            sigma = sigma_model1(j, sigma_T, B, device)
+            sigma = sigma_model1(j, training["T"], B, device)
                 
             u_correction_test = model1(input_test, sigma)
             u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
