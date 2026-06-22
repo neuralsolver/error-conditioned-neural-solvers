@@ -27,6 +27,7 @@ We provide a larger collection of datasets than those used in the paper. The tab
 <p align="center">
   <img src="figures/benchmark_settings.png" width="60%">
 </p>
+
 ## All Pretrained models
 ## Installation
 
