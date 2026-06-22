@@ -1,0 +1,53 @@
+{
+  "seed": 33,
+  "device": "auto",
+  "data": {
+    "training_path": "data/training",
+    "testing_path": "data/testing",
+    "train_file": null,
+    "test_file": null,
+    "input_key": "a",
+    "u_key": "u"
+  },
+  "model0": {
+    "in_channels": 1,
+    "out_channels": 21,
+    "depths": [2, 11],
+    "widths": [384, 768],
+    "d_ff_multiplier": 3,
+    "d_head": 64,
+    "neighborhood_kernel_size": 7,
+    "mapping_depth": 1,
+    "mapping_width": 768,
+    "mapping_d_ff_multiplier": 3,
+    "patch_size": [8, 8],
+    "dropout": 0.0
+  },
+  "model1": {
+    "in_channels": 43,
+    "out_channels": 21,
+    "depths": [2, 11],
+    "widths": [384, 768],
+    "d_ff_multiplier": 3,
+    "d_head": 64,
+    "neighborhood_kernel_size": 7,
+    "mapping_depth": 1,
+    "mapping_width": 768,
+    "mapping_d_ff_multiplier": 3,
+    "patch_size": [8, 8],
+    "dropout": 0.0
+  },
+  "pde": {
+    "nu": 0.00001,
+    "dt": 0.2,
+    "forcing": "default"
+  },
+  "testing": {
+    "batch_size": 1,
+    "T": 80,
+    "correction_step": 0.01,
+    "checkpoint": "checkpoints/ENS_NS.pth",
+    "save_reconstruction_loss": "results/test_loss.npy",
+    "save_pde_loss": "results/test_pde.npy"
+  }
+}
