@@ -43,15 +43,17 @@ class CNNFeedForwardBlock(nn.Module):
         return residual + x
 
 
-def build_model(in_channels: int, out_channels: int, cfg: dict) -> nn.Module:
-    widths = cfg["widths"]
-    d_ffs = [w * cfg.get("d_ff_multiplier", 3) for w in widths]
+def build_model(model_config, device):
+    widths = model_config["widths"]
+    d_ffs = [w * model_config.get("d_ff_multiplier", 3) for w in widths]
     self_attns = [
         NeighborhoodAttentionSpec(
-            d_head=cfg.get("d_head", 64),
-            kernel_size=cfg.get("neighborhood_kernel_size", 7),
+            d_head=model_config.get("d_head", 64),
+            kernel_size=model_config.get("neighborhood_kernel_size", 7),
         ),
-        GlobalAttentionSpec(d_head=cfg.get("d_head", 64)),
+        GlobalAttentionSpec(
+            d_head=model_config.get("d_head", 64)
+        ),
     ]
     levels = [
         LevelSpec(
@@ -59,24 +61,33 @@ def build_model(in_channels: int, out_channels: int, cfg: dict) -> nn.Module:
             width=w,
             d_ff=ff,
             self_attn=sa,
-            dropout=cfg.get("dropout", 0.0),
+            dropout=model_config.get("dropout", 0.0),
         )
-        for d, w, ff, sa in zip(cfg["depths"], widths, d_ffs, self_attns)
+        for d, w, ff, sa in zip(
+            model_config["depths"],
+            widths,
+            d_ffs,
+            self_attns,
+        )
     ]
-    mapping_width = cfg.get("mapping_width", 768)
+    mapping_width = model_config.get("mapping_width", 768)
     mapping = MappingSpec(
-        depth=cfg.get("mapping_depth", 1),
+        depth=model_config.get("mapping_depth", 1),
         width=mapping_width,
-        d_ff=mapping_width * cfg.get("mapping_d_ff_multiplier", 3),
-        dropout=cfg.get("dropout", 0.0),
+        d_ff=mapping_width
+        * model_config.get("mapping_d_ff_multiplier", 3),
+        dropout=model_config.get("dropout", 0.0),
     )
-    return ImageTransformerDenoiserModelV2Orig(
+    
+    model = ImageTransformerDenoiserModelV2Orig(
         levels=levels,
         mapping=mapping,
-        in_channels=in_channels,
-        out_channels=out_channels,
-        patch_size=cfg.get("patch_size", [8, 8]),
+        in_channels=model_config["in_channels"],
+        out_channels=model_config["out_channels"],
+        patch_size=model_config.get("patch_size", [8, 8]),
     )
+
+    return model.to(device)
 
 
 def apply_cnn_ff(
