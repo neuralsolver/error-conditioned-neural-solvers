@@ -51,7 +51,7 @@ def load_ns_h5(data_path, file_name=None, input_key="a", u_key="u"):
 def make_loader(u_in, u_out, batch_size, shuffle=True, num_workers=0, pin_memory=False):
     u_in = torch.from_numpy(u_in).float().unsqueeze(1)
     u_output = torch.from_numpy(u_out).permute(0,3,1,2).float()
-    u_out = torch.cat([train_u_in, train_u_output], dim=1)
+    u_out = torch.cat([u_in, u_output], dim=1)
 
     dataset = TensorDataset(u_out, u_in)
     loader = DataLoader(
