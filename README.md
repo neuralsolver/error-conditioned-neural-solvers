@@ -133,12 +133,15 @@ $$
 We use $\nu=1e-3$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
 
 ### Setup
-First install natten from here https://drive.google.com/drive/folders/1YOgBhJIoOCietf2WkFg8sO_Zlj0K-auW?usp=sharing.
 
 ```bash
-pip install -r NS_solver/requirements.txt
+pip install -r NS_solver(transformer)/requirements.txt
 ```
+then download natten package from [here](https://drive.google.com/drive/folders/1YOgBhJIoOCietf2WkFg8sO_Zlj0K-auW?usp=sharing).
 
+```bash
+pip install wheels/natten*.whl
+```
 ### Training
 Train from scratch:
 
