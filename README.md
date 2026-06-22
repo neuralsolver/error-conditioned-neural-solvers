@@ -1,16 +1,6 @@
 # Feed-Forward ENS
 ![Teaser](figures/pipeline.png)
-
-The solver uses two neural operators (FNO/VideoPDE): 
-
-**model0**: produces an initial prediction from the forcing field `f`, for Helmoholtz and Poisson Equation, or intial condition `u_0` for Burgers Equation, Navier Stoke, and Komolgorov flow.
-
-**model1**: iteratively corrects the prediction using the PDE residual as feedback
-
-At each correction step:
-$$u^{(t+1)} = u^{(t)} + \alpha \cdot \text{model1}([f,\ u^{(t)},\ \mathcal{R}(u^{(t)})])$$
-where $\mathcal{R}(u)$ is the PDE residual.
-
+[🌐 Project Page](https://neuralsolver.github.io/) 
 ## Complete Dataset
 ## All Pretrained models
 ## Installation
