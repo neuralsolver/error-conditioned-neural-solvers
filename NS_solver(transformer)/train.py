@@ -1,12 +1,13 @@
-from __future__ import annotations
-
 import argparse
+import sys
 from pathlib import Path
 
 import torch
 import torch.nn as nn
 import yaml
 from tqdm import tqdm
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from data_utils import (
     get_device,
