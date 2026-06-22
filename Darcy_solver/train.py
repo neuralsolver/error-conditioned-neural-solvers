@@ -16,14 +16,14 @@ from pde_losses import PDELossDarcy
 def build_models(config, device):
     model_config = config["model"]
     model0 = FNO_CNN(
-        in_channels=2,
+        in_channels=1,
         out_channels=1,
         hidden_channels=model_config["hidden_channels"],
         n_modes=tuple(model_config["n_modes"]),
         n_layers=model_config["n_layers"],
     ).to(device)
     model1 = FNO_CNN(
-        in_channels=4,
+        in_channels=3,
         out_channels=1,
         hidden_channels=model_config["hidden_channels"],
         n_modes=tuple(model_config["n_modes"]),
@@ -41,15 +41,16 @@ def main():
     set_seed(config.get("seed", 33))
     device = get_device(config.get("device", "auto"))
 
-    train_u, train_f, train_a, aBC, train_dataset, train_loader, train_path = load_train_loader(config, device)
+    train_u, train_a, train_dataset, train_loader, train_path = load_train_loader(config, device)
     print(f"Loaded train data from {train_path}")
-    print(f"train_u shape: {tuple(train_u.shape)}, train_f shape: {tuple(train_f.shape)}, train_a shape: {tuple(train_a.shape)}")
+    print(f"train_u shape: {tuple(train_u.shape)}, train_a shape: {tuple(train_a.shape)}")
 
     loss = nn.MSELoss()
     pde_loss_grid = PDELossDarcy()
     model0, model1 = build_models(config, device)
 
     training = config["training"]
+    
     resume_checkpoint = training.get("resume_checkpoint")
     resume_checkpoint = None if resume_checkpoint in [None, "", "none", "None"] else resume_checkpoint
     if resume_checkpoint:
