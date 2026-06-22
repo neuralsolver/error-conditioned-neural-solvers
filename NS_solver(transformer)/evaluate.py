@@ -53,7 +53,7 @@ def main():
 
         u_pred_test = model0(test_u_in, sigma_model0(B, device))
         
-        for j in range(T):
+        for j in range(testing["T"]):
             R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
             input_test = torch.cat([test_u_in, u_pred_test, R_test], dim=1)
             sigma = sigma_model1(j, sigma_T, B, device)
