@@ -49,7 +49,6 @@ def main():
     with torch.no_grad():
         test_u_out = test_u_out.to(device)
         test_u_in = test_u_in.to(device)
-        u_pred_test = model0(test_u_in)
         B = test_u_in_batch.shape[0]
 
         u_pred_test = model0(test_u_in_batch, sigma_model0(B, device))
