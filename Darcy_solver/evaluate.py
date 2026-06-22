@@ -16,14 +16,14 @@ from pde_losses import PDELossDarcy
 def build_models(config, device):
     model_config = config["model"]
     model0 = FNO_CNN(
-        in_channels=2,
+        in_channels=1,
         out_channels=1,
         hidden_channels=model_config["hidden_channels"],
         n_modes=tuple(model_config["n_modes"]),
         n_layers=model_config["n_layers"],
     ).to(device)
     model1 = FNO_CNN(
-        in_channels=4,
+        in_channels=3,
         out_channels=1,
         hidden_channels=model_config["hidden_channels"],
         n_modes=tuple(model_config["n_modes"]),
@@ -42,11 +42,13 @@ def main():
     set_seed(config.get("seed", 33))
     device = get_device(config.get("device", "auto"))
 
-    test_u, test_f, test_a, aBC_test, test_dataset, test_loader, test_path = load_test_loader(config, device)
+    test_u, test_a, test_dataset, test_loader, test_path = load_test_loader(config, device)
     print(f"Loaded test data from {test_path}")
-    print(f"test_u shape: {tuple(test_u.shape)}, test_f shape: {tuple(test_f.shape)}, test_a shape: {tuple(test_a.shape)}")
+    print(f"test_u shape: {tuple(test_u.shape)}, test_a shape: {tuple(test_a.shape)}")
 
     loss = nn.MSELoss()
+    pde_config = config["pde"]
+    f = pde_config["f"]
     pde_loss_grid = PDELossDarcy()
     model0, model1 = build_models(config, device)
 
@@ -63,17 +65,17 @@ def main():
     model0.eval()
     model1.eval()
     with torch.no_grad():
-        u_pred_test = model0(torch.cat([test_f, test_a], dim=1))
+        u_pred_test = model0(test_a)
 
         for j in range(testing["T"]):
-            l_pde_test = pde_loss_grid(u_pred_test, test_f, test_a)
-            input_test = torch.cat([test_f, test_a, u_pred_test, l_pde_test], dim=1)
+            l_pde_test = pde_loss_grid(u_pred_test, test_a, f)
+            input_test = torch.cat([test_a, u_pred_test, l_pde_test], dim=1)
             u_correction_test = model1(input_test)
 
             u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
 
             test_loss = loss(u_pred_test, test_u)
-            pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_f, test_a)**2)
+            pde_loss = torch.mean(pde_loss_grid(u_pred_test, test_a, f)**2)
             test.append(test_loss.item())
             pde.append(pde_loss.item())
 
