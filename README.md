@@ -130,7 +130,7 @@ $$
 \nabla \cdot v = 0
 $$
 
-We use $\nu=1e-3$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
+We use $\nu=1e-4$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
 
 ### Setup
 
@@ -146,7 +146,7 @@ pip install wheels/natten*.whl
 Train from scratch:
 
 ```bash
-cd NS_solver
+cd NS_solver(transformer)
 python -u train.py --config config/ns.json
 ```
 
@@ -160,7 +160,7 @@ python -u evaluate.py --config config/ns.json
 #### Viscosity-shift:
 Use a Navier-stokes test set generated with a different viscosity.
 
-Example for $\nu = 1e-4$:
+Example for $\nu = 1e-5$:
 
 ```bash
 python -u evaluate.py --config config/ns_visc_shift.json
