@@ -1,4 +1,5 @@
 # Feed-Forward ENS
+![Teaser](figures/pipeline.png)
 
 The solver uses two neural operators (FNO/VideoPDE): 
 
