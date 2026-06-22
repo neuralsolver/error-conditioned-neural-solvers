@@ -1,7 +1,7 @@
 # Feed-Forward ENS
 ![Teaser](figures/pipeline.png)
 [🌐 Project Page](https://neuralsolver.github.io/) 
-## Soler Structure
+## Solver Structure
 All PDE solvers follow the same directory structure. Below we show
 `HZ_solver/` as an example.
 
@@ -22,6 +22,10 @@ HZ_solver/
 └── data_utils.py
 ```
 ## Complete Dataset
+
+We provide a larger collection of datasets than those used in the paper. The table below summarizes the evaluation regimes reported in our experiments.
+We provide a substantially larger collection of datasets than those used in the paper. The table below summarizes the benchmark settings and evaluation regimes reported in our experiments.
+![Benchmark Settings](figures/benchmark_settings.png)
 ## All Pretrained models
 ## Installation
 
