@@ -28,8 +28,8 @@ def main():
 
     loss = nn.MSELoss()
     pde_loss_grid = PDELossNS2d()
-    model0 = build_model(cfg["model0"], device)
-    model1 = build_model(cfg["model1"], device)
+    model0 = build_model(config["model0"], device)
+    model1 = build_model(config["model1"], device)
 
     training = config["training"]
     pde_config = config["pde"]
