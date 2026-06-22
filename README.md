@@ -1,6 +1,6 @@
 # Feed-Forward ENS
 
-The solver uses two neural operators (FNO): 
+The solver uses two neural operators (FNO/VideoPDE): 
 
 **model0**: produces an initial prediction from the forcing field `f`, for Helmoholtz and Poisson Equation, or intial condition `u_0` for Burgers Equation, Navier Stoke, and Komolgorov flow.
 
@@ -133,6 +133,8 @@ $$
 We use $\nu=1e-3$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$ with $128 \times 128$ resolution for training. 
 
 ### Setup
+First install natten from here https://drive.google.com/drive/folders/1YOgBhJIoOCietf2WkFg8sO_Zlj0K-auW?usp=sharing.
+
 ```bash
 pip install -r NS_solver/requirements.txt
 ```
