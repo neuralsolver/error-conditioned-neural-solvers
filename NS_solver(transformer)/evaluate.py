@@ -47,43 +47,43 @@ def main():
     model1.eval()
     
     with torch.no_grad():
-        for u_out_batch, u_in_batch in tqdm(test_loader, desc="evaluate"):
-            test_u_out_batch = u_out_batch.to(device)
-            test_u_in_batch = u_in_batch.to(device)
-            B = test_u_in_batch.shape[0]
+        test_u_out = test_u_out.to(device)
+        test_u_in = test_u_in.to(device)
+        u_pred_test = model0(test_u_in)
+        B = test_u_in_batch.shape[0]
 
-            u_pred_test = model0(test_u_in_batch, sigma_model0(B, device))
-
-            for j in range(T):
-                R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
-                input_test = torch.cat([test_u_in_batch, u_pred_test, R_test], dim=1)
-                sigma = sigma_model1(j, sigma_T, B, device)
-                
-                u_correction_test = model1(input_test, sigma)
-                u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
-                test_loss = loss(u_pred_test, test_u_out)
-                pde_loss = torch.mean(pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))**2)
-                test.append(test_loss.item())
-                pde.append(pde_loss.item())
-                
-                print(f"T_test {j + 1}: reconstruction loss {test_loss.item():.6e}, pde loss {pde_loss.item():.6e}")
-
-            rel_l2 = relative_l2_error(u_pred_test, test_u_out)
-            print(f"Relative L2 error: {rel_l2.item():.2e}")
-            
-        save_reconstruction_loss = testing.get("save_reconstruction_loss")
-        if save_reconstruction_loss:
-            save_reconstruction_loss = Path(save_reconstruction_loss)
-            save_reconstruction_loss.parent.mkdir(parents=True, exist_ok=True)
-            np.save(save_reconstruction_loss, np.array(test))
-            print(f"Saved reconstruction loss to {save_reconstruction_loss}")
+        u_pred_test = model0(test_u_in_batch, sigma_model0(B, device))
         
-        save_pde_loss = testing.get("save_pde_loss")
-        if save_pde_loss:
-            save_pde_loss = Path(save_pde_loss)
-            save_pde_loss.parent.mkdir(parents=True, exist_ok=True)
-            np.save(save_pde_loss, np.array(pde))
-            print(f"Saved PDE loss to {save_pde_loss}")
+        for j in range(T):
+            R_test = pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))
+            input_test = torch.cat([test_u_in, u_pred_test, R_test], dim=1)
+            sigma = sigma_model1(j, sigma_T, B, device)
+                
+            u_correction_test = model1(input_test, sigma)
+            u_pred_test = u_pred_test + testing["correction_step"] * u_correction_test
+            test_loss = loss(u_pred_test, test_u_out)
+            pde_loss = torch.mean(pde_loss_grid(u_pred_test, f, pde_config["nu"], pde_config.get("dt", 0.2))**2)
+            test.append(test_loss.item())
+            pde.append(pde_loss.item())
+                
+            print(f"T_test {j + 1}: reconstruction loss {test_loss.item():.6e}, pde loss {pde_loss.item():.6e}")
+
+        rel_l2 = relative_l2_error(u_pred_test, test_u_out)
+        print(f"Relative L2 error: {rel_l2.item():.2e}")
+            
+    save_reconstruction_loss = testing.get("save_reconstruction_loss")
+    if save_reconstruction_loss:
+        save_reconstruction_loss = Path(save_reconstruction_loss)
+        save_reconstruction_loss.parent.mkdir(parents=True, exist_ok=True)
+        np.save(save_reconstruction_loss, np.array(test))
+        print(f"Saved reconstruction loss to {save_reconstruction_loss}")
+        
+    save_pde_loss = testing.get("save_pde_loss")
+    if save_pde_loss:
+        save_pde_loss = Path(save_pde_loss)
+        save_pde_loss.parent.mkdir(parents=True, exist_ok=True)
+        np.save(save_pde_loss, np.array(pde))
+        print(f"Saved PDE loss to {save_pde_loss}")
 
 if __name__ == "__main__":
     main()
