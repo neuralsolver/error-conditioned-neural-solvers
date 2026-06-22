@@ -8,9 +8,8 @@ import torch.nn as nn
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from data_utils import get_device, load_config, load_train_loader, set_seed
-from models import FNO_CNN
-from ns_utils import make_forcing
+from data_utils import get_device, load_config, load_train_loader, set_seed, make_forcing, sigma_model0, sigma_model1
+from model import build_model
 from pde_losses import PDELossNS2d
 
 def main():
