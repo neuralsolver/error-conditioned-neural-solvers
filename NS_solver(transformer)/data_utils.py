@@ -1,4 +1,4 @@
-import math
+import json
 import random
 from pathlib import Path
 
@@ -8,83 +8,102 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset
 
 
-def set_seed(seed: int = 42) -> None:
+def load_config(config_path):
+    with open(config_path, "r") as f:
+        return json.load(f)
+
+
+def set_seed(seed=42):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     random.seed(seed)
 
 
-def get_device(device_name: str = "auto") -> torch.device:
+def get_device(device_name="auto"):
     if device_name == "auto":
-        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     return torch.device(device_name)
 
 
-def resolve_data_file(data_path: str | Path, file_name: str | None = None) -> Path:
+def find_h5_file(data_path, file_name=None):
     data_path = Path(data_path)
     if file_name is not None:
         return data_path / file_name
-    if data_path.is_file():
-        return data_path
 
-    candidates = sorted(list(data_path.glob("*.h5")) + list(data_path.glob("*.hdf5")))
-    if not candidates:
-        raise FileNotFoundError(f"No .h5/.hdf5 file found in {data_path}")
-    return candidates[0]
-
-
-def load_ns_tensors(path: str | Path, input_key: str = "a", u_key: str = "u") -> tuple[torch.Tensor, torch.Tensor]:
-    with h5py.File(path, "r") as data:
-        u_in = torch.from_numpy(data[input_key][:]).float().unsqueeze(1)
-        u_output = torch.from_numpy(data[u_key][:]).permute(0, 3, 1, 2).float()
-    u_out = torch.cat([u_in, u_output], dim=1)
-    return u_out, u_in
+    h5_files = sorted(list(data_path.glob("*.h5")) + list(data_path.glob("*.hdf5")))
+    if len(h5_files) == 0:
+        raise FileNotFoundError(f"No .h5 file found in {data_path}")
+    if len(h5_files) > 1:
+        names = ", ".join(str(path.name) for path in h5_files)
+        raise ValueError(f"More than one .h5 file found in {data_path}: {names}. Please set file name in config.")
+    return h5_files[0]
 
 
-def make_loader(
-    u_out: torch.Tensor,
-    u_in: torch.Tensor,
-    batch_size: int,
-    shuffle: bool,
-    num_workers: int = 0,
-    pin_memory: bool = False,
-) -> DataLoader:
+def load_ns_h5(data_path, file_name=None, input_key="a", u_key="u"):
+    h5_path = find_h5_file(data_path, file_name)
+    with h5py.File(h5_path, "r") as f:
+        train_u_in = f[input_key][:]
+        train_u_out = f[u_key][:]
+    return train_u_in, train_u_out, h5_path
+
+
+def make_loader(u_in, u_out, batch_size, shuffle=True, num_workers=0, pin_memory=False):
+    u_in = torch.from_numpy(u_in).float().unsqueeze(1)
+    u_output = torch.from_numpy(data['u'][:]).permute(0,3,1,2).float()
+    u_out = torch.cat([train_u_in, train_u_output], dim=1)
+
     dataset = TensorDataset(u_out, u_in)
-    return DataLoader(
+    loader = DataLoader(
         dataset,
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
         pin_memory=pin_memory,
     )
+    return u_out, u_in, dataset, loader
 
 
-def make_forcing(n, device, forcing="default"):
-    a = torch.linspace(0, 1, n + 1, device=device)
-    a = a[0:-1]
-    X, Y = torch.meshgrid(a, a, indexing="ij")
-
-    if forcing == "default":
-        return 0.1 * (torch.sin(2 * math.pi * (X + Y)) + torch.cos(2 * math.pi * (X + Y)))
-    if forcing == "KF":
-        return -4.0 * torch.cos(2 * math.pi * 4 * Y)
-    if forcing == "forcing_shift":
-        return 0.1 * (torch.sin(4 * math.pi * (X + Y)) + torch.cos(4 * math.pi * (X + Y)))
-    raise ValueError(f"Unknown forcing: {forcing}")
-
-
-def sigma_model0(batch_size: int, device: torch.device) -> torch.Tensor:
-    return torch.ones(batch_size, device=device)
-
-
-def sigma_model1(j: int, T: int, batch_size: int, device: torch.device) -> torch.Tensor:
-    val = (j + 1) / T
-    return torch.full((batch_size,), val, device=device)
+def load_train_loader(config):
+    data_config = config["data"]
+    training = config["training"]
+    train_u_in_np, train_u_out_np, train_path = load_ns_h5(
+        data_config["training_path"],
+        data_config.get("train_file"),
+        data_config.get("input_key", "a"),
+        data_config.get("u_key", "u"),
+    )
+    train_u_out, train_u_in, train_dataset, train_loader = make_loader(
+        train_u_in_np,
+        train_u_out_np,
+        training["batch_size"],
+        shuffle=True,
+        num_workers=training.get("num_workers", 0),
+        pin_memory=training.get("pin_memory", False),
+    )
+    return train_u_out, train_u_in, train_dataset, train_loader, train_path
 
 
-def relative_l2(u_pred: torch.Tensor, u_true: torch.Tensor) -> torch.Tensor:
+def load_test_loader(config):
+    data_config = config["data"]
+    testing = config["testing"]
+    test_u_in_np, test_u_out_np, test_path = load_ns_h5(
+        data_config["testing_path"],
+        data_config.get("test_file"),
+        data_config.get("input_key", "a"),
+        data_config.get("u_key", "u"),
+    )
+    test_u_out, test_u_in, test_dataset, test_loader = make_loader(
+        test_u_in_np,
+        test_u_out_np,
+        testing["batch_size"],
+        shuffle=False,
+    )
+    return test_u_out, test_u_in, test_dataset, test_loader, test_path
+
+
+def relative_l2_error(u_pred, u_true):
     return torch.mean(
-        torch.linalg.vector_norm(u_pred - u_true, dim=(1, 2, 3))
-        / (torch.linalg.vector_norm(u_true, dim=(1, 2, 3)) + 1e-12)
+        torch.linalg.vector_norm(u_pred - u_true, dim=(1,2,3)) /
+        (torch.linalg.vector_norm(u_true, dim=(1,2,3)) + 1e-12)
     )
