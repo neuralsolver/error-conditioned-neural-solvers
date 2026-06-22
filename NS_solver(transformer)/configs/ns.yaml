@@ -3,7 +3,7 @@
   "device": "auto",
   "data": {
     "training_path": "data/NS_128(1e-4)_train.h5",
-    "testing_path": "data/NS_128(1e-5)_test.h5",
+    "testing_path": "data/NS_128(1e-4)_test.h5",
     "train_file": null,
     "test_file": null,
     "input_key": "a",
