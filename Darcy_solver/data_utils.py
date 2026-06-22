@@ -40,72 +40,57 @@ def find_h5_file(data_path, file_name=None):
     return h5_files[0]
 
 
-def load_darcy_h5(data_path, file_name=None, a_key="a", f_key="f", u_key="pp", aBC_key="aBc"):
+def load_darcy_h5(data_path, file_name=None, a_key="thresh_a_data", u_key="thresh_p_data"):
     h5_path = find_h5_file(data_path, file_name)
     with h5py.File(h5_path, "r") as f:
         A = f[a_key][:]
-        F_data = f[f_key][:]
         U = f[u_key][:]
-        aBC = f[aBC_key][:] if aBC_key in f else None
-    return U, F_data, A, aBC, h5_path
+    return U, A, h5_path
 
 
-def make_loader(U, F_data, A, aBC, batch_size, shuffle=True, device=None, include_aBC=True):
-    U = torch.from_numpy(U).float().unsqueeze(1)
-    F_data = torch.from_numpy(F_data).float().unsqueeze(1)
-    A = torch.from_numpy(A).float().unsqueeze(1)
+def make_loader(U, A, batch_size, shuffle=True, device=None):
+    U = torch.from_numpy(U).float().permute(2,0,1).unsqueeze(1)
+    A = torch.from_numpy(A).float().permute(2,0,1).unsqueeze(1)
 
     if device is not None:
         U = U.to(device)
-        F_data = F_data.to(device)
         A = A.to(device)
-
-    if include_aBC:
-        if aBC is None:
-            aBC = np.zeros((U.shape[0], 2 * (U.shape[2] + U.shape[3])), dtype=np.float32)
-        aBC = torch.from_numpy(aBC).float()
-        if device is not None:
-            aBC = aBC.to(device)
-        dataset = TensorDataset(U, F_data, A, aBC)
-    else:
-        dataset = TensorDataset(U, F_data, A)
-
+        
+    dataset = TensorDataset(U, A)
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
-    return U, F_data, A, aBC, dataset, loader
+    return U, A, dataset, loader
 
 
 def load_train_loader(config, device):
     data_config = config["data"]
     training = config["training"]
-    U, F_data, A, aBC, train_path = load_darcy_h5(
+    
+    U, A, train_path = load_darcy_h5(
         data_config["training_path"],
         data_config.get("train_file"),
-        data_config.get("a_key", "a"),
-        data_config.get("f_key", "f"),
-        data_config.get("u_key", "pp"),
-        data_config.get("aBC_key", "aBc"),
+        data_config.get("a_key", "thresh_a_data"),
+        data_config.get("u_key", "thresh_p_data"),
     )
-    train_u, train_f, train_a, aBC, train_dataset, train_loader = make_loader(
-        U, F_data, A, aBC, training["batch_size"], shuffle=True, device=device, include_aBC=True
+    train_u, train_a, train_dataset, train_loader = make_loader(
+        U, A, training["batch_size"], shuffle=True, device=device
     )
-    return train_u, train_f, train_a, aBC, train_dataset, train_loader, train_path
+    return train_u, train_a, train_dataset, train_loader, train_path
 
 
 def load_test_loader(config, device):
     data_config = config["data"]
     testing = config["testing"]
-    U_test, F_data_test, A_test, aBC_test, test_path = load_darcy_h5(
+    
+    U_test, A_test, test_path = load_darcy_h5(
         data_config["testing_path"],
         data_config.get("test_file"),
-        data_config.get("a_key", "a"),
-        data_config.get("f_key", "f"),
-        data_config.get("u_key", "pp"),
-        data_config.get("aBC_key", "aBc"),
+        data_config.get("a_key", "thresh_a_data"),
+        data_config.get("u_key", "thresh_p_data"),
     )
-    test_u, test_f, test_a, aBC_test, test_dataset, test_loader = make_loader(
-        U_test, F_data_test, A_test, aBC_test, testing["batch_size"], shuffle=False, device=device, include_aBC=False
+    test_u, test_a, test_dataset, test_loader = make_loader(
+        U_test, A_test, testing["batch_size"], shuffle=False, device=device
     )
-    return test_u, test_f, test_a, aBC_test, test_dataset, test_loader, test_path
+    return test_u, test_a, test_dataset, test_loader, test_path
 
 
 def relative_l2_error(u_pred, u_true):
