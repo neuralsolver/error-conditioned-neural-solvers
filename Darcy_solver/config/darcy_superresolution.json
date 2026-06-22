@@ -6,20 +6,21 @@
     "testing_path": "data/testing",
     "train_file": null,
     "test_file": null,
-    "a_key": "a",
-    "f_key": "f",
-    "u_key": "pp",
-    "aBC_key": "aBc"
+    "a_key": "thresh_a_data"
+    "u_key": "thresh_p_data"
   },
   "model": {
     "hidden_channels": 64,
     "n_modes": [20, 20],
     "n_layers": 4
   },
+  "pde": {
+    "f": 100
+  },
   "testing": {
     "batch_size": 32,
-    "T": 120,
-    "correction_step": 0.005,
+    "T": 60,
+    "correction_step": 0.009,
     "checkpoint": "checkpoints/ENS_Darcy.pth",
     "save_reconstruction_loss": "results/test_loss.npy",
     "save_pde_loss": "results/test_pde.npy"
