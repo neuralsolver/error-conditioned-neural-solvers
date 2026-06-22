@@ -40,9 +40,9 @@ class PDELossPS(nn.Module):
         return residual
 
 
-def PDELossDarcy(u, a, f=None):
+def PDELossDarcy(u, a, f):
     if f is None:
-        f = 100 * torch.ones_like(u)
+        f = f * torch.ones_like(u)
     elif not torch.is_tensor(f):
         f = torch.tensor(f, dtype=u.dtype, device=u.device)
         if f.ndim == 2:
