@@ -67,6 +67,7 @@ def main():
         for u_out_batch, u_in_batch in train_loader:
             u_out_batch = u_out_batch.to(device)
             u_in_batch = u_in_batch.to(device)
+            B = u_out_batch.shape[0]
             optimizer.zero_grad()
             
             u_pred = model0(u_in_batch, sigma_model0(B, device))
