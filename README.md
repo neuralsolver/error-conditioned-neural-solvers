@@ -201,7 +201,7 @@ Example for $256 \times 256$:
 python -u evaluate.py --config configs/ns_superresolution.json
 ```
 ## Darcy flow:
-$$\nabla \cdot (a \nabla u) = f, \quad u = 0 \text{ on } \partial\Omega$$
+$$ -\nabla \cdot (a \nabla u) = f, \quad u = 0 \text{ on } \partial\Omega$$
 
 We use $128 \times 128$ resolution and $f=100$ for training. 
 ### Training
