@@ -1,6 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
+import natten
 
 import numpy as np
 import torch
