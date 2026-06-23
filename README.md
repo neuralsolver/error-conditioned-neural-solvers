@@ -172,7 +172,7 @@ python -u train.py --config config/ns.json
 Use a Navier-stokes test set with the same equation setting as training.
 
 ```bash
-python -u evaluate.py --config config/ns.json
+python -u evaluate.py --config configs/ns.json
 ```
 #### Viscosity-shift:
 Use a Navier-stokes test set generated with a different viscosity.
@@ -180,7 +180,7 @@ Use a Navier-stokes test set generated with a different viscosity.
 Example for $\nu = 1e-5$:
 
 ```bash
-python -u evaluate.py --config config/ns_visc_shift.json
+python -u evaluate.py --config configs/ns_visc_shift.json
 ```
 
 #### Forcing-shift:
@@ -189,7 +189,7 @@ Use a Navier-stokes test set generated with a different forcing term.
 Example for $f= 0.1\bigl(\sin(4\pi(r_1+r_2)) + \cos(4\pi(r_1+r_2))\bigr)$:
 
 ```bash
-python -u evaluate.py --config config/ns_f_shift.json
+python -u evaluate.py --config configs/ns_f_shift.json
 ```
 
 #### Super-resolution:
@@ -198,7 +198,7 @@ Use a higher-resolution Navier-stokes test set.
 Example for $256 \times 256$:
 
 ```bash
-python -u evaluate.py --config config/ns_superresolution.json
+python -u evaluate.py --config configs/ns_superresolution.json
 ```
 ## Darcy flow:
 $$\nabla \cdot (a \nabla u) = f, \quad u = 0 \text{ on } \partial\Omega$$
@@ -211,12 +211,19 @@ Train from scratch:
 cd Darcy_solver
 python -u train.py --config config/darcy.json
 ```
-#### Evaluation
+## Evaluation
 #### Indistribution:
 Use a Darcy-flow test set with the same equation setting as training.
 
 ```bash
 python -u evaluate.py --config config/darcy.json
+```
+#### Forcing-shift:
+Use a Darcy-flow test set generated with a different forcing term
+
+Example for $f = 100$:
+```bash
+python -u evaluate.py --config config/darcy_forcingshift.json
 ```
 
 #### Super-resolution:
