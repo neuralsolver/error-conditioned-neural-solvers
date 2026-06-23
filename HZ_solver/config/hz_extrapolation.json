@@ -23,7 +23,7 @@
     "T": 80,
     "correction_step": 0.05,
     "checkpoint": "checkpoints/ENS_HZ.pth",
-    "save_reconstruction_loss": "results/test_loss.npy",
-    "save_pde_loss": "results/test_pde.npy"
+    "save_reconstruction_loss": "results/test_loss_EX.npy",
+    "save_pde_loss": "results/test_pde_EX.npy"
   }
 }
