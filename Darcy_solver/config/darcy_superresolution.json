@@ -6,7 +6,7 @@
     "testing_path": "data/testing",
     "train_file": null,
     "test_file": null,
-    "a_key": "thresh_a_data"
+    "a_key": "thresh_a_data",
     "u_key": "thresh_p_data"
   },
   "model": {
