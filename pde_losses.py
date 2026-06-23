@@ -45,14 +45,14 @@ class PDELossDarcy(nn.Module):
         super().__init__()
         
     def forward(self, u, a, f):
-        if f is None:
-            f = f * torch.ones_like(u)
-        elif not torch.is_tensor(f):
-            f = torch.tensor(f, dtype=u.dtype, device=u.device)
-            if f.ndim == 2:
-                f = f[None, None, :, :]
-        else:
-            f = f.to(dtype=u.dtype, device=u.device)
+        #if f is None:
+        force = f * torch.ones_like(u)
+        #elif not torch.is_tensor(f):
+            #force = torch.tensor(f, dtype=u.dtype, device=u.device)
+            #if f.ndim == 2:
+                #f = f[None, None, :, :]
+        #else:
+            #f = f.to(dtype=u.dtype, device=u.device)
     
         h = 1.0 / (u.shape[-1] - 1)
     
@@ -65,7 +65,7 @@ class PDELossDarcy(nn.Module):
     
         div = (ae * (u[:, :, 1:-1, 2:] - uc) - aw * (uc - u[:, :, 1:-1, :-2]) + ass * (u[:, :, 2:, 1:-1] - uc) - an * (uc - u[:, :, :-2, 1:-1])) / h**2
     
-        residual_inner = -div - f[:, :, 1:-1, 1:-1]
+        residual_inner = -div - force[:, :, 1:-1, 1:-1]
     
         residual = torch.zeros_like(u)
         residual[:, :, 1:-1, 1:-1] = residual_inner
