@@ -16,13 +16,13 @@
   },
  "pde": {
     "loss_type": "HZ",
-    "k": 1,
-    "lamb": 0
+    "k": 3,
+    "lamb" 4
   },
   "testing": {
     "batch_size": 32,
-    "T": 70,
-    "correction_step": 0.03,
+    "T": 50,
+    "correction_step": 0.02,
     "checkpoint": "checkpoints/ENS_PS.pth",
     "use_structured_noise": false,
     "noise_level": 30,
