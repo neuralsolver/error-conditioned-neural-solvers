@@ -31,7 +31,7 @@ def find_h5_file(data_path, file_name=None):
     if file_name is not None:
         return data_path / file_name
 
-    h5_files = sorted(list(data_path.glob("*.h5")) + list(data_path.glob("*.hdf5")))
+    h5_files = sorted(list(data_path.glob("*.h5")) + list(data_path.glob("*.hdf5")) + list(data_path.glob("*.mat")))
     if len(h5_files) == 0:
         raise FileNotFoundError(f"No .h5 file found in {data_path}")
     if len(h5_files) > 1:
