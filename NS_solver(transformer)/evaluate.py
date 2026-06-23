@@ -31,7 +31,7 @@ def main():
     model0 = build_model(config["model0"], device)
     model1 = build_model(config["model1"], device)
 
-    #training = config["training"]
+    training = config["training"]
     testing = config["testing"]
     pde_config = config["pde"]
     f = make_forcing(test_u_out.shape[-1], device, pde_config.get("forcing", "default"))
