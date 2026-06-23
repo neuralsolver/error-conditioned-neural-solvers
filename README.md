@@ -211,7 +211,7 @@ Train from scratch:
 cd Darcy_solver
 python -u train.py --config config/darcy.json
 ```
-## Evaluation
+### Evaluation
 #### Indistribution:
 Use a Darcy-flow test set with the same equation setting as training.
 
