@@ -98,7 +98,7 @@ def main():
 
                 data_loss += (
                     loss(u_pred, u_batch)
-                    + training["pde_weight"] * torch.mean(pde_loss_grid(u_pred, f_batch, k, lamb)**2)
+                    + training["pde_weight"] * torch.mean(pde_loss_grid(u_pred, a_batch, f)**2)
                 )
 
             data_loss = data_loss / T
