@@ -229,6 +229,7 @@ python -u evaluate.py --config config/darcy_forcingshift.json
 #### Super-resolution:
 Use a higher-resolution Darcy-flow test set.
 
+Example for $256 \times 256$:
 ```bash
 python -u evaluate.py --config config/darcy_superresolution.json
 ```
