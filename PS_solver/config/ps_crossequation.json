@@ -21,7 +21,7 @@
   },
   "testing": {
     "batch_size": 32,
-    "T": 50,
+    "T": 60,
     "correction_step": 0.02,
     "checkpoint": "checkpoints/ENS_PS.pth",
     "use_structured_noise": false,
