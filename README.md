@@ -132,7 +132,7 @@ python -u evaluate.py --config config/ps_superresolution.json
 ```
 
 #### Cross-equation:
-Zero-shot test on Helmholtz equation:
+Zero-shot test on nonlinear Helmholtz equation:
 
 ```bash
 python -u evaluate.py --config config/ps_crossequation.json
