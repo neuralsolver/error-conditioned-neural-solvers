@@ -221,7 +221,7 @@ python -u evaluate.py --config config/darcy.json
 #### Forcing-shift:
 Use a Darcy-flow test set generated with a different forcing term
 
-Example for $f = 100$:
+Example for $f = 200$:
 ```bash
 python -u evaluate.py --config config/darcy_forcingshift.json
 ```
