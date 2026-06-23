@@ -17,7 +17,7 @@
  "pde": {
     "loss_type": "HZ",
     "k": 3,
-    "lamb" 4
+    "lamb": 4
   },
   "testing": {
     "batch_size": 32,
