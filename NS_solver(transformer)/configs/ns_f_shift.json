@@ -42,6 +42,20 @@
     "dt": 0.2,
     "forcing": "forcing_shift"
   },
+  "training": {
+    "batch_size": 30,
+    "n_epochs": 2000,
+    "T": 5,
+    "correction_step": 0.1,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "resume_checkpoint": null,
+    "save_checkpoint": "checkpoints/ENS_NS.pth",
+    "save_loss": "results/train_loss.npy",
+    "print_every": 10,
+    "num_workers": 0,
+    "pin_memory": false
+  },
   "testing": {
     "batch_size": 1,
     "T": 10,
