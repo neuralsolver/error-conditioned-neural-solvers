@@ -95,7 +95,7 @@ def main():
 
                 u_correction = model1(input_data)
                 u_next = u_pred + training["correction_step"] * u_correction
-                data_loss += loss(u_pred, u_batch)
+                data_loss += loss(u_next, u_batch)
                 u_pred = u_next.detach()
 
             data_loss = data_loss / T
