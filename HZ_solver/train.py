@@ -94,13 +94,10 @@ def main():
                     input_data = torch.cat([f_batch, u_pred, l_pde], dim=1)
 
                 u_correction = model1(input_data)
-                u_pred = u_pred + training["correction_step"] * u_correction
-
-                data_loss += (
-                    loss(u_pred, u_batch)
-                    + training["pde_weight"] * torch.mean(pde_loss_grid(u_pred, f_batch, k, lamb)**2)
-                )
-
+                u_next = u_pred + training["correction_step"] * u_correction
+                data_loss += loss(u_pred, u_batch)
+                u_pred = u_next.detach()
+                   
             data_loss = data_loss / T
             data_loss.backward()
             optimizer.step()
