@@ -19,7 +19,7 @@
     "lamb": 0
   },
   "training": {
-    "batch_size": 64,
+    "batch_size": 20,
     "n_epochs": 2000,
     "T": 5,
     "correction_step": 0.05,
