@@ -1,6 +1,6 @@
 # Error-Conditioned Neural Solvers
 ![Teaser](figures/pipeline.png)
-[🌐 Project Page](https://neuralsolver.github.io/) 
+
 ## Solver Structure
 All PDE solvers follow the same directory structure. Below we show
 `HZ_solver/` as an example.
