@@ -218,12 +218,12 @@ Use a Darcy-flow test set with the same equation setting as training.
 ```bash
 python -u evaluate.py --config config/darcy.json
 ```
-#### Forcing-shift:
-Use a Darcy-flow test set generated with a different forcing term
+#### Permeability-shift:
+Use a Darcy-flow test set generated with a different range of permeability
 
-Example for $f = 200$:
+Example for $a \in [1,50]$:
 ```bash
-python -u evaluate.py --config config/darcy_forcingshift.json
+python -u evaluate.py --config config/darcy_permeabilityshift.json
 ```
 
 #### Super-resolution:
