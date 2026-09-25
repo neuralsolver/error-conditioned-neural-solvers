@@ -23,7 +23,7 @@ HZ_solver/
 ```
 ## Complete Dataset and Pretrained models
 
-We provide a broader collection of datasets than those used in the paper, together with the corresponding checkpoints, available [here](https://drive.google.com/drive/folders/1l_yLE9Yr0yJTdXs1wzrIpsdX7MW-HYkU?usp=sharing). The table below summarizes the evaluation regimes reported in our experiments. 
+We provide a broader collection of datasets than those used in the paper, together with the corresponding checkpoints, available [here](https://drive.google.com/drive/folders/1Fd_D9BeTPAogLWpuq0vc8oG0_7-10f0s?usp=sharing). The table below summarizes the evaluation regimes reported in our experiments. 
 <p align="center">
   <img src="figures/benchmark_settings.png" width="60%">
 </p>
