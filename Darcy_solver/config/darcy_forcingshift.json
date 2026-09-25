@@ -15,7 +15,7 @@
     "n_layers": 4
   },
   "pde": {
-    "f": 200
+    "f": 100
   },
   "testing": {
     "batch_size": 32,
