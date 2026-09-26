@@ -151,7 +151,7 @@ We use $\nu=1e-4$, $f= 0.1\bigl(\sin(2\pi(r_1+r_2)) + \cos(2\pi(r_1+r_2))\bigr)$
 ### Setup
 
 ```bash
-pip install -r NS_solver(transformer)/requirements.txt
+pip install -r "NS_solver(transformer)/requirements.txt"
 ```
 then download natten package from [here](https://drive.google.com/drive/folders/1YOgBhJIoOCietf2WkFg8sO_Zlj0K-auW?usp=sharing).
 
@@ -162,7 +162,7 @@ pip install wheels/natten*.whl
 Train from scratch:
 
 ```bash
-cd NS_solver(transformer)
+cd "NS_solver(transformer)"
 python -u train.py --config config/ns.json
 ```
 
