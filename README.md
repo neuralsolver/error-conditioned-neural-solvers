@@ -163,7 +163,7 @@ Train from scratch:
 
 ```bash
 cd "NS_solver(transformer)"
-python -u train.py --config config/ns.json
+python -u train.py --config configs/ns.json
 ```
 
 ### Evaluation
