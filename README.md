@@ -35,12 +35,12 @@ conda env create -f environment.yml
 conda activate Feed-Forward-ENS
 ```
 
-## Helmoholtz Equation
+## Helmholtz Equation
 $$\nabla^2 u + k^2 u + \lambda u^3 = f, \quad (x, y) \in [0,1]^2, \quad u = 0 \text{ on } \partial\Omega$$ 
 
 For linear Helmholtz equation, we use $k=1$, $\lambda=0$ with $128 \times 128$ resolution for training. 
 
-For nonlinear Helmholtz equation, we use $k=2$, $\lambda=1$ with $128 \times 128$ resoltion for training.
+For nonlinear Helmholtz equation, we use $k=2$, $\lambda=1$ with $128 \times 128$ resolution for training.
 
 ### Setup
 ```bash
@@ -122,7 +122,7 @@ python -u evaluate.py --config config/ps_extrapolation.json
 ```
 
 #### Super-resolution:
-Use a higher-resolution Helmholtz test set.
+Use a higher-resolution Poisson test set.
 
 Example for $256 \times 256$:
 
