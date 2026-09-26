@@ -233,7 +233,7 @@ Example for $256 \times 256$:
 python -u evaluate.py --config config/darcy_superresolution.json
 ```
 
-## Test for numerical optimiztaion (Newton/Gauss-Newton/Gradient-Descent)
+## Test for numerical optimization (Newton/Gauss-Newton/Gradient-Descent)
 
 Example for Newton's method which initialized from noise, aiming to solve nonlinear Helmholtz equation.
 
