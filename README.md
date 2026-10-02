@@ -5,7 +5,7 @@
 All PDE solvers follow the same directory structure. Below we show
 `HZ_solver/` as an example.
 
-[🌐 Project Page](https://neuralsolver.github.io/) | [📄 Paper]((https://arxiv.org/abs/2606.27354))
+[🌐 Project Page](https://neuralsolver.github.io/) | [📄 Paper](https://arxiv.org/abs/2606.27354)
 ```text
 HZ_solver/
 ├── config/
